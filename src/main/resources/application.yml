@@ -1,0 +1,31 @@
+quarkus:
+    http:
+        port: 6700
+        # configure test port
+        test-port: 3030
+    datasource:
+        db-kind: postgresql
+        username: postgres
+        password: admin
+        jdbc:
+            url: jdbc:postgresql://localhost:5432/quarkus_icecream
+
+    flyway:
+        # initiate migration on application bootup
+        migrate-at-start: true
+        # create flyway history table when none exists
+        baseline-on-migrate: true
+        # validate migration
+        validate-on-migrate: true
+    hibernate-orm:
+        # enable SQL logs
+        log:
+            sql: true
+    # enable debug on project
+    log:
+        # default to debug
+        level: INFO
+        category:
+            "io.aldwindelgado":
+                level: DEBUG
+
