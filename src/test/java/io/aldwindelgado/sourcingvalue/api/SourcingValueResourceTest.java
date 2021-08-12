@@ -1,8 +1,8 @@
-package io.aldwindelgado.ingredient.api;
+package io.aldwindelgado.sourcingvalue.api;
 
 import static org.mockito.ArgumentMatchers.anyString;
 
-import io.aldwindelgado.ingredient.service.IngredientService;
+import io.aldwindelgado.sourcingvalue.service.SourcingValueService;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
 import io.restassured.RestAssured;
@@ -15,31 +15,29 @@ import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 /**
- * Quarkus not yet properly supports multiple @Nested of JUnit 5
- *
  * @author Aldwin Delgado
  */
 @QuarkusTest
-class IngredientResourceTest {
+class SourcingValueResourceTest {
 
-    private final static String GET_BY_NAME_URI = "/ingredients/{name}";
-    private final static String GET_ALL_URI = "/ingredients";
+    private final static String GET_BY_NAME_URI = "/sourcing-values/{name}";
+    private final static String GET_ALL_URI = "/sourcing-values";
 
     @InjectMock
-    IngredientService service;
+    SourcingValueService service;
 
     @Test
     void getByName_whenFound_thenReturn200() {
-        final var response = new IngredientResponseDto("cream", List.of("Banana Split"));
+        final var response = new SourcingValueResponseDto("Non-GMO", List.of("Banana Split"));
         Mockito.when(service.getByName(anyString())).thenReturn(response);
 
         RestAssured.given()
-            .pathParam("name", "cream")
+            .pathParam("name", "non-gmo")
             .when().get(GET_BY_NAME_URI)
             .then()
             .statusCode(200)
             .contentType(ContentType.JSON)
-            .body("name", Matchers.equalTo("cream"))
+            .body("name", Matchers.equalTo("Non-GMO"))
             .body("products[0]", Matchers.equalTo("Banana Split"));
     }
 
@@ -49,7 +47,7 @@ class IngredientResourceTest {
         Mockito.when(service.getByName(anyString())).thenThrow(exception);
 
         RestAssured.given()
-            .pathParam("name", "cream")
+            .pathParam("name", "non-gmo")
             .when().get(GET_BY_NAME_URI)
             .then()
             .statusCode(400)
@@ -64,7 +62,7 @@ class IngredientResourceTest {
         Mockito.when(service.getByName(anyString())).thenThrow(exception);
 
         RestAssured.given()
-            .pathParam("name", "cream")
+            .pathParam("name", "non-gmo")
             .when().get(GET_BY_NAME_URI)
             .then()
             .statusCode(404)
@@ -75,7 +73,7 @@ class IngredientResourceTest {
 
     @Test
     void getAll_whenFound_thenReturn200() {
-        final var response = List.of(new IngredientResponseDto("cream", List.of("Banana Split")));
+        final var response = List.of(new SourcingValueResponseDto("Non-GMO", List.of("Banana Split")));
         Mockito.when(service.getAll()).thenReturn(response);
 
         RestAssured.given()
@@ -83,9 +81,8 @@ class IngredientResourceTest {
             .then()
             .statusCode(200)
             .contentType(ContentType.JSON)
-            .body("[0].name", Matchers.equalTo("cream"))
+            .body("[0].name", Matchers.equalTo("Non-GMO"))
             .body("[0].products[0]", Matchers.equalTo("Banana Split"));
-
     }
 
     @Test

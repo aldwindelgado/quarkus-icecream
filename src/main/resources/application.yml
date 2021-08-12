@@ -1,8 +1,6 @@
 quarkus:
     http:
         port: 6700
-        # configure test port
-        test-port: 3030
     datasource:
         db-kind: postgresql
         username: postgres

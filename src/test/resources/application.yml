@@ -1,0 +1,22 @@
+quarkus:
+    http:
+        # configure test port
+        test-port: 3030
+    flyway:
+
+        # initiate migration on application bootup
+        migrate-at-start: false
+        # create flyway history table when none exists
+        baseline-on-migrate: false
+        # validate migration
+        validate-on-migrate: false
+
+    hibernate-orm:
+        # enable SQL logs
+        log:
+            sql: true
+    # enable debug on project
+    log:
+        # default to debug
+        level: INFO
+
