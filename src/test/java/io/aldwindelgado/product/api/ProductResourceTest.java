@@ -2,6 +2,7 @@ package io.aldwindelgado.product.api;
 
 import static org.mockito.ArgumentMatchers.anyString;
 
+import io.aldwindelgado.product.api.exchange.ProductResponseDto;
 import io.aldwindelgado.product.service.ProductService;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;

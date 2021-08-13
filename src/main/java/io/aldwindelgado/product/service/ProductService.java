@@ -1,6 +1,6 @@
 package io.aldwindelgado.product.service;
 
-import io.aldwindelgado.product.api.ProductResponseDto;
+import io.aldwindelgado.product.api.exchange.ProductResponseDto;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;

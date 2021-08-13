@@ -1,12 +1,16 @@
 package io.aldwindelgado.ingredient.api;
 
+import io.aldwindelgado.ingredient.api.exchange.IngredientRequestDto;
 import io.aldwindelgado.ingredient.service.IngredientService;
+import javax.transaction.Transactional;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.Response.Status;
 import org.jboss.logging.Logger;
 
 /**
@@ -22,6 +26,13 @@ public class IngredientResource {
 
     public IngredientResource(IngredientService service) {
         this.service = service;
+    }
+
+    @Transactional
+    @POST
+    public Response createProduct(IngredientRequestDto requestDto) {
+        log.infov("REST request to create a new ingredient: {0}", requestDto);
+        return Response.noContent().build();
     }
 
     @GET

@@ -1,4 +1,4 @@
-package io.aldwindelgado.ingredient.api;
+package io.aldwindelgado.ingredient.api.exchange;
 
 import java.io.Serializable;
 import java.util.List;

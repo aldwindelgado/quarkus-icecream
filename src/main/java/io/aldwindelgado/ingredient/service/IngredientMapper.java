@@ -1,6 +1,7 @@
 package io.aldwindelgado.ingredient.service;
 
-import io.aldwindelgado.ingredient.api.IngredientResponseDto;
+import io.aldwindelgado.ingredient.api.exchange.IngredientRequestDto;
+import io.aldwindelgado.ingredient.api.exchange.IngredientResponseDto;
 import io.aldwindelgado.product.service.Product;
 import java.util.List;
 import java.util.Set;
@@ -26,5 +27,7 @@ public interface IngredientMapper {
     default List<IngredientResponseDto> toResponseDtos(List<Ingredient> ingredients) {
         return ingredients.stream().map(this::toResponseDto).collect(Collectors.toList());
     }
+
+    Ingredient toEntity(IngredientRequestDto requestDto);
 
 }

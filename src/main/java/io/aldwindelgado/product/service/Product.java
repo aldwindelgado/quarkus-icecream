@@ -67,6 +67,26 @@ public class Product {
         // no-op
     }
 
+    public void addIngredient(Ingredient ingredient) {
+        ingredients.add(ingredient);
+        ingredient.getProducts().add(this);
+    }
+
+    public void removeIngredient(Ingredient ingredient) {
+        ingredients.remove(ingredient);
+        ingredient.getProducts().remove(this);
+    }
+
+    public void addSourcingValue(SourcingValue sourcingValue) {
+        sourcingValues.add(sourcingValue);
+        sourcingValue.getProducts().add(this);
+    }
+
+    public void removeSourcingValue(SourcingValue sourcingValue) {
+        sourcingValues.remove(sourcingValue);
+        sourcingValue.getProducts().remove(this);
+    }
+
     public Long getId() {
         return id;
     }

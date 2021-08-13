@@ -1,4 +1,4 @@
-package io.aldwindelgado.config.exceptionhandling;
+package io.aldwindelgado.config.exceptionhandler;
 
 import java.io.Serializable;
 import java.time.ZoneId;

@@ -1,6 +1,6 @@
 package io.aldwindelgado.sourcingvalue.service;
 
-import io.aldwindelgado.sourcingvalue.api.SourcingValueResponseDto;
+import io.aldwindelgado.sourcingvalue.api.exchange.SourcingValueResponseDto;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;

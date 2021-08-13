@@ -1,7 +1,7 @@
 package io.aldwindelgado.sourcingvalue.service;
 
 import io.aldwindelgado.product.service.Product;
-import io.aldwindelgado.sourcingvalue.api.SourcingValueResponseDto;
+import io.aldwindelgado.sourcingvalue.api.exchange.SourcingValueResponseDto;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;

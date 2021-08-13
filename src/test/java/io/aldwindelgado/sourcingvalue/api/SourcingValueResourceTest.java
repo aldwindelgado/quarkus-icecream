@@ -2,6 +2,7 @@ package io.aldwindelgado.sourcingvalue.api;
 
 import static org.mockito.ArgumentMatchers.anyString;
 
+import io.aldwindelgado.sourcingvalue.api.exchange.SourcingValueResponseDto;
 import io.aldwindelgado.sourcingvalue.service.SourcingValueService;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;

@@ -1,6 +1,7 @@
 package io.aldwindelgado.ingredient.service;
 
-import io.aldwindelgado.ingredient.api.IngredientResponseDto;
+import io.aldwindelgado.ingredient.api.exchange.IngredientRequestDto;
+import io.aldwindelgado.ingredient.api.exchange.IngredientResponseDto;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
@@ -28,7 +29,7 @@ public class IngredientService implements PanacheRepositoryBase<Ingredient, Long
         return mapper.toResponseDtos(ingredients);
     }
 
-    public IngredientResponseDto getByName(String name) {
+    public IngredientResponseDto getByName(final String name) {
         if (name == null) {
             throw new BadRequestException("Ingredient's name is required");
         }
@@ -42,4 +43,15 @@ public class IngredientService implements PanacheRepositoryBase<Ingredient, Long
     }
 
 
+    public void createIngredient(final IngredientRequestDto requestDto) {
+        if (requestDto == null) {
+            throw new BadRequestException("Request body is required");
+        }
+
+        if (requestDto.getName() == null) {
+            throw new BadRequestException("Ingredient name is required");
+        }
+
+        persist(mapper.toEntity(requestDto));
+    }
 }

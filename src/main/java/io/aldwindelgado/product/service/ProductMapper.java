@@ -1,7 +1,7 @@
 package io.aldwindelgado.product.service;
 
 import io.aldwindelgado.ingredient.service.Ingredient;
-import io.aldwindelgado.product.api.ProductResponseDto;
+import io.aldwindelgado.product.api.exchange.ProductResponseDto;
 import io.aldwindelgado.sourcingvalue.service.SourcingValue;
 import java.util.List;
 import java.util.Set;

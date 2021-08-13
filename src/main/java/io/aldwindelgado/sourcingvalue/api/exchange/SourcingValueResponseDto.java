@@ -1,4 +1,4 @@
-package io.aldwindelgado.sourcingvalue.api;
+package io.aldwindelgado.sourcingvalue.api.exchange;
 
 import java.io.Serializable;
 import java.util.List;

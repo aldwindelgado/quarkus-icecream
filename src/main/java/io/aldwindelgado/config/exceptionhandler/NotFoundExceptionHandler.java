@@ -1,6 +1,6 @@
-package io.aldwindelgado.config.exceptionhandling;
+package io.aldwindelgado.config.exceptionhandler;
 
-import io.aldwindelgado.config.exceptionhandling.GenericExceptionHandler.ApiErrorDto;
+import io.aldwindelgado.config.exceptionhandler.GenericExceptionHandler.ApiErrorDto;
 import javax.ws.rs.NotFoundException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
