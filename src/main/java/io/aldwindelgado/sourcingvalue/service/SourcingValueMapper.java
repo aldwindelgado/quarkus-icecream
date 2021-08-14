@@ -1,6 +1,7 @@
 package io.aldwindelgado.sourcingvalue.service;
 
 import io.aldwindelgado.product.service.Product;
+import io.aldwindelgado.sourcingvalue.api.exchange.SourcingValueRequestDto;
 import io.aldwindelgado.sourcingvalue.api.exchange.SourcingValueResponseDto;
 import java.util.List;
 import java.util.Set;
@@ -27,4 +28,5 @@ public interface SourcingValueMapper {
         return sourcingValues.stream().map(this::toResponseDto).collect(Collectors.toList());
     }
 
+    SourcingValue toEntity(SourcingValueRequestDto requestDto);
 }

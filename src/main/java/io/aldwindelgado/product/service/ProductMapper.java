@@ -1,6 +1,7 @@
 package io.aldwindelgado.product.service;
 
 import io.aldwindelgado.ingredient.service.Ingredient;
+import io.aldwindelgado.product.api.exchange.ProductRequestDto;
 import io.aldwindelgado.product.api.exchange.ProductResponseDto;
 import io.aldwindelgado.sourcingvalue.service.SourcingValue;
 import java.util.List;
@@ -34,4 +35,7 @@ public interface ProductMapper {
         return products.stream().map(this::toResponseDto).collect(Collectors.toList());
     }
 
+    @Mapping(target = "ingredients", ignore = true)
+    @Mapping(target = "sourcingValues", ignore = true)
+    Product toEntity(ProductRequestDto requestDto);
 }

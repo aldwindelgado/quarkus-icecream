@@ -1,7 +1,11 @@
 package io.aldwindelgado.sourcingvalue.api;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import io.aldwindelgado.sourcingvalue.api.exchange.SourcingValueRequestDto;
 import io.aldwindelgado.sourcingvalue.api.exchange.SourcingValueResponseDto;
 import io.aldwindelgado.sourcingvalue.service.SourcingValueService;
 import io.quarkus.test.junit.QuarkusTest;
@@ -10,19 +14,24 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import java.util.List;
 import javax.ws.rs.BadRequestException;
+import javax.ws.rs.NotAcceptableException;
 import javax.ws.rs.NotFoundException;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 /**
+ * Quarkus not yet properly supports multiple @Nested of JUnit 5
+ *
  * @author Aldwin Delgado
  */
 @QuarkusTest
 class SourcingValueResourceTest {
 
+    private static final String APPLICATION_PROBLEM_JSON = "application/problem+json";
     private final static String GET_BY_NAME_URI = "/sourcing-values/{name}";
-    private final static String GET_ALL_URI = "/sourcing-values";
+    private final static String BASE_URI = "/sourcing-values";
 
     @InjectMock
     SourcingValueService service;
@@ -52,7 +61,7 @@ class SourcingValueResourceTest {
             .when().get(GET_BY_NAME_URI)
             .then()
             .statusCode(400)
-            .contentType("application/problem+json")
+            .contentType(APPLICATION_PROBLEM_JSON)
             .body("$", Matchers.hasKey("timestamp"))
             .body("message", Matchers.equalTo("Mocked response message"));
     }
@@ -67,7 +76,22 @@ class SourcingValueResourceTest {
             .when().get(GET_BY_NAME_URI)
             .then()
             .statusCode(404)
-            .contentType("application/problem+json")
+            .contentType(APPLICATION_PROBLEM_JSON)
+            .body("$", Matchers.hasKey("timestamp"))
+            .body("message", Matchers.equalTo("Mocked response message"));
+    }
+
+    @Test
+    void getByName_whenServiceThrowsNotFoundException_thenReturn500() {
+        NotAcceptableException exception = new NotAcceptableException("Mocked response message");
+        Mockito.when(service.getByName(anyString())).thenThrow(exception);
+
+        RestAssured.given()
+            .pathParam("name", "non-gmo")
+            .when().get(GET_BY_NAME_URI)
+            .then()
+            .statusCode(500)
+            .contentType(APPLICATION_PROBLEM_JSON)
             .body("$", Matchers.hasKey("timestamp"))
             .body("message", Matchers.equalTo("Mocked response message"));
     }
@@ -78,7 +102,7 @@ class SourcingValueResourceTest {
         Mockito.when(service.getAll()).thenReturn(response);
 
         RestAssured.given()
-            .when().get(GET_ALL_URI)
+            .when().get(BASE_URI)
             .then()
             .statusCode(200)
             .contentType(ContentType.JSON)
@@ -92,10 +116,86 @@ class SourcingValueResourceTest {
         Mockito.when(service.getAll()).thenThrow(exception);
 
         RestAssured.given()
-            .when().get(GET_ALL_URI)
+            .when().get(BASE_URI)
             .then()
             .statusCode(404)
-            .contentType("application/problem+json")
+            .contentType(APPLICATION_PROBLEM_JSON)
+            .body("$", Matchers.hasKey("timestamp"))
+            .body("message", Matchers.equalTo("Mocked response message"));
+    }
+
+    @Test
+    void getAll_whenServiceThrowsNotHandledException_thenReturn500() {
+        NotAcceptableException exception = new NotAcceptableException("Mocked response message");
+        Mockito.when(service.getAll()).thenThrow(exception);
+
+        RestAssured.given()
+            .when().get(BASE_URI)
+            .then()
+            .statusCode(500)
+            .contentType(APPLICATION_PROBLEM_JSON)
+            .body("$", Matchers.hasKey("timestamp"))
+            .body("message", Matchers.equalTo("Mocked response message"));
+    }
+
+    @Test
+    void create_whenSuccess_thenReturn201() throws JsonProcessingException {
+        final var mapper = new ObjectMapper();
+        final var rawJson = mapper.createObjectNode();
+        rawJson.put("name", "non-gmo");
+        final var request = mapper.writeValueAsString(rawJson);
+
+        final var response = RestAssured.given()
+            .contentType(ContentType.JSON)
+            .body(request)
+            .when().post(BASE_URI)
+            .then()
+            .statusCode(201)
+            .header("Location", Matchers.endsWith("/sourcing-values/non-gmo"))
+            .extract().asString();
+
+        // we expect the response should be empty
+        Assertions.assertEquals("", response);
+    }
+
+    @Test
+    void create_whenServiceThrowsBadRequestException_thenReturn400() throws JsonProcessingException {
+        BadRequestException exception = new BadRequestException("Mocked response message");
+        Mockito.doThrow(exception).when(service).create(any(SourcingValueRequestDto.class));
+
+        final var mapper = new ObjectMapper();
+        final var rawJson = mapper.createObjectNode();
+        rawJson.put("name", "non-gmo");
+        final var request = mapper.writeValueAsString(rawJson);
+
+        RestAssured.given()
+            .contentType(ContentType.JSON)
+            .body(request)
+            .when().post(BASE_URI)
+            .then()
+            .statusCode(400)
+            .contentType(APPLICATION_PROBLEM_JSON)
+            .body("$", Matchers.hasKey("timestamp"))
+            .body("message", Matchers.equalTo("Mocked response message"));
+    }
+
+    @Test
+    void create_whenServiceThrowsNotHandledException_thenReturn500() throws JsonProcessingException {
+        NotAcceptableException exception = new NotAcceptableException("Mocked response message");
+        Mockito.doThrow(exception).when(service).create(any(SourcingValueRequestDto.class));
+
+        final var mapper = new ObjectMapper();
+        final var rawJson = mapper.createObjectNode();
+        rawJson.put("name", "non-gmo");
+        final var request = mapper.writeValueAsString(rawJson);
+
+        RestAssured.given()
+            .contentType(ContentType.JSON)
+            .body(request)
+            .when().post(BASE_URI)
+            .then()
+            .statusCode(500)
+            .contentType(APPLICATION_PROBLEM_JSON)
             .body("$", Matchers.hasKey("timestamp"))
             .body("message", Matchers.equalTo("Mocked response message"));
     }

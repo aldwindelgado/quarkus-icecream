@@ -1,7 +1,6 @@
 package io.aldwindelgado.ingredient.api.exchange;
 
 import java.io.Serializable;
-import java.util.List;
 
 /**
  * @author Aldwin Delgado
@@ -10,10 +9,13 @@ public class IngredientRequestDto implements Serializable {
 
     private static final long serialVersionUID = -881854355875614830L;
 
-    private final String name;
+    private String name;
 
+    public IngredientRequestDto() {
+        // no-op
+    }
 
-    public IngredientRequestDto(String name) {
+    public void setName(String name) {
         this.name = name;
     }
 

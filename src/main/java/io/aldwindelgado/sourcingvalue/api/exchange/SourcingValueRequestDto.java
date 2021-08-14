@@ -7,9 +7,15 @@ import java.io.Serializable;
  */
 public class SourcingValueRequestDto implements Serializable {
 
-    private final String name;
+    private static final long serialVersionUID = 2038063123792402717L;
 
-    public SourcingValueRequestDto(String name) {
+    private String name;
+
+    public SourcingValueRequestDto() {
+        // no-op
+    }
+
+    public void setName(String name) {
         this.name = name;
     }
 

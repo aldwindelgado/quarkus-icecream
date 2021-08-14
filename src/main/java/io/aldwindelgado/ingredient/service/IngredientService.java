@@ -5,14 +5,19 @@ import io.aldwindelgado.ingredient.api.exchange.IngredientResponseDto;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
+import javax.persistence.PersistenceException;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
+import org.hibernate.exception.ConstraintViolationException;
 
 /**
  * @author Aldwin Delgado
  */
 @ApplicationScoped
 public class IngredientService implements PanacheRepositoryBase<Ingredient, Long> {
+
+    // this is the constraint name declared on the database
+    private static final String UNIQUE_INGREDIENT_NAME = "unq_ingredient_name";
 
     private final IngredientMapper mapper;
 
@@ -42,8 +47,7 @@ public class IngredientService implements PanacheRepositoryBase<Ingredient, Long
         return mapper.toResponseDto(ingredient.get());
     }
 
-
-    public void createIngredient(final IngredientRequestDto requestDto) {
+    public void create(final IngredientRequestDto requestDto) {
         if (requestDto == null) {
             throw new BadRequestException("Request body is required");
         }
@@ -52,6 +56,20 @@ public class IngredientService implements PanacheRepositoryBase<Ingredient, Long
             throw new BadRequestException("Ingredient name is required");
         }
 
-        persist(mapper.toEntity(requestDto));
+        final var ingredient = mapper.toEntity(requestDto);
+
+        try {
+            persistAndFlush(ingredient);
+        } catch (PersistenceException pEx) {
+            if (pEx.getCause() instanceof ConstraintViolationException) {
+                ConstraintViolationException cvEx = (ConstraintViolationException) pEx.getCause();
+                if (cvEx.getConstraintName().equals(UNIQUE_INGREDIENT_NAME)) {
+                    throw new BadRequestException("Duplicate ingredient name");
+                }
+            }
+
+            // default
+            throw new BadRequestException("Invalid request");
+        }
     }
 }
