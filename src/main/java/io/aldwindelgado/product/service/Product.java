@@ -2,18 +2,20 @@ package io.aldwindelgado.product.service;
 
 import io.aldwindelgado.ingredient.service.Ingredient;
 import io.aldwindelgado.sourcingvalue.service.SourcingValue;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import org.hibernate.Hibernate;
 
@@ -23,7 +25,8 @@ import org.hibernate.Hibernate;
 public class Product {
 
     @Id
-    @GeneratedValue
+    @SequenceGenerator(name = "idSeq", sequenceName = "product_seq", initialValue = 2195, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "idSeq")
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -53,7 +56,7 @@ public class Product {
         joinColumns = @JoinColumn(name = "product_id"),
         inverseJoinColumns = @JoinColumn(name = "ingredient_id")
     )
-    private Set<Ingredient> ingredients = new HashSet<>();
+    private List<Ingredient> ingredients = new ArrayList<>();
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     @JoinTable(
@@ -61,15 +64,17 @@ public class Product {
         joinColumns = @JoinColumn(name = "product_id"),
         inverseJoinColumns = @JoinColumn(name = "sourcing_value_id")
     )
-    private Set<SourcingValue> sourcingValues = new HashSet<>();
+    private List<SourcingValue> sourcingValues = new ArrayList<>();
 
     public Product() {
         // no-op
     }
 
-    public void addIngredient(Ingredient ingredient) {
-        ingredients.add(ingredient);
-        ingredient.getProducts().add(this);
+    public void addIngredients(List<Ingredient> ingredients) {
+        for (Ingredient ingredient : ingredients) {
+            this.ingredients.add(ingredient);
+            ingredient.getProducts().add(this);
+        }
     }
 
     public void removeIngredient(Ingredient ingredient) {
@@ -77,9 +82,11 @@ public class Product {
         ingredient.getProducts().remove(this);
     }
 
-    public void addSourcingValue(SourcingValue sourcingValue) {
-        sourcingValues.add(sourcingValue);
-        sourcingValue.getProducts().add(this);
+    public void addSourcingValues(List<SourcingValue> sourcingValues) {
+        for (SourcingValue sourcingValue : sourcingValues) {
+            this.sourcingValues.add(sourcingValue);
+            sourcingValue.getProducts().add(this);
+        }
     }
 
     public void removeSourcingValue(SourcingValue sourcingValue) {
@@ -151,15 +158,20 @@ public class Product {
         this.dietaryCertifications = dietaryCertifications;
     }
 
-    public Set<Ingredient> getIngredients() {
-        return ingredients;
-    }
-
-    public void setIngredients(Set<Ingredient> ingredients) {
+    public void setIngredients(List<Ingredient> ingredients) {
         this.ingredients = ingredients;
     }
 
-    public Set<SourcingValue> getSourcingValues() {
+    public void setSourcingValues(
+        List<SourcingValue> sourcingValues) {
+        this.sourcingValues = sourcingValues;
+    }
+
+    public List<Ingredient> getIngredients() {
+        return ingredients;
+    }
+
+    public List<SourcingValue> getSourcingValues() {
         return sourcingValues;
     }
 
@@ -194,4 +206,5 @@ public class Product {
             "allergyInfo = " + allergyInfo + ", " +
             "dietaryCertifications = " + dietaryCertifications + ")";
     }
+
 }

@@ -1,6 +1,7 @@
 package io.aldwindelgado.product.api.exchange;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -10,35 +11,61 @@ public class ProductRequestDto implements Serializable {
 
     private static final long serialVersionUID = 172167201268071936L;
 
-    private final String name;
+    private String name;
 
-    private final String imageClosed;
+    private String imageClosed;
 
-    private final String imageOpen;
+    private String imageOpen;
 
-    private final String description;
+    private String description;
 
-    private final String story;
+    private String story;
 
-    private final String allergyInfo;
+    private String allergyInfo;
 
-    private final String dietaryCertifications;
+    private String dietaryCertifications;
 
-    private final List<String> ingredients;
+    private List<String> ingredients = new ArrayList<>();
 
-    private final List<String> sourcingValues;
+    private List<String> sourcingValues = new ArrayList<>();
 
-    private ProductRequestDto(String name, String imageClosed, String imageOpen, String description,
-        String story, String allergyInfo, String dietaryCertifications, List<String> ingredients,
-        List<String> sourcingValues) {
+    public ProductRequestDto() {
+        // no-op
+    }
+
+    public void setName(String name) {
         this.name = name;
+    }
+
+    public void setImageClosed(String imageClosed) {
         this.imageClosed = imageClosed;
+    }
+
+    public void setImageOpen(String imageOpen) {
         this.imageOpen = imageOpen;
+    }
+
+    public void setDescription(String description) {
         this.description = description;
+    }
+
+    public void setStory(String story) {
         this.story = story;
+    }
+
+    public void setAllergyInfo(String allergyInfo) {
         this.allergyInfo = allergyInfo;
+    }
+
+    public void setDietaryCertifications(String dietaryCertifications) {
         this.dietaryCertifications = dietaryCertifications;
+    }
+
+    public void setIngredients(List<String> ingredients) {
         this.ingredients = ingredients;
+    }
+
+    public void setSourcingValues(List<String> sourcingValues) {
         this.sourcingValues = sourcingValues;
     }
 
@@ -77,86 +104,6 @@ public class ProductRequestDto implements Serializable {
     public List<String> getSourcingValues() {
         return sourcingValues;
     }
-
-    public ProductRequestBuilder builder() {
-        return new ProductRequestBuilder();
-    }
-
-    public static class ProductRequestBuilder {
-
-        private String name;
-
-        private String imageClosed;
-
-        private String imageOpen;
-
-        private String description;
-
-        private String story;
-
-        private String allergyInfo;
-
-        private String dietaryCertifications;
-
-        private List<String> ingredients;
-
-        private List<String> sourcingValues;
-
-        public ProductRequestBuilder() {
-            // no-op
-        }
-
-        public ProductRequestBuilder name(String name) {
-            this.name = name;
-            return this;
-        }
-
-        public ProductRequestBuilder imageClosed(String imageClosed) {
-            this.imageClosed = imageClosed;
-            return this;
-        }
-
-        public ProductRequestBuilder imageOpen(String imageOpen) {
-            this.imageOpen = imageOpen;
-            return this;
-        }
-
-        public ProductRequestBuilder description(String description) {
-            this.description = description;
-            return this;
-        }
-
-        public ProductRequestBuilder story(String story) {
-            this.story = story;
-            return this;
-        }
-
-        public ProductRequestBuilder allergyInfo(String allergyInfo) {
-            this.allergyInfo = allergyInfo;
-            return this;
-        }
-
-        public ProductRequestBuilder dietaryCertifications(String dietaryCertifications) {
-            this.dietaryCertifications = dietaryCertifications;
-            return this;
-        }
-
-        public ProductRequestBuilder ingredients(List<String> ingredients) {
-            this.ingredients = ingredients;
-            return this;
-        }
-
-        public ProductRequestBuilder sourcingValues(List<String> sourcingValues) {
-            this.sourcingValues = sourcingValues;
-            return this;
-        }
-
-        public ProductRequestDto build() {
-            return new ProductRequestDto(name, imageClosed, imageOpen, description, story, allergyInfo,
-                dietaryCertifications, ingredients, sourcingValues);
-        }
-    }
-
 
     @Override
     public String toString() {

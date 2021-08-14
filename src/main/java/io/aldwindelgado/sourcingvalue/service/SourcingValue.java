@@ -1,9 +1,9 @@
 package io.aldwindelgado.sourcingvalue.service;
 
 import io.aldwindelgado.product.service.Product;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,7 +26,7 @@ public class SourcingValue {
     private String name;
 
     @ManyToMany(mappedBy = "sourcingValues")
-    private Set<Product> products = new HashSet<>();
+    private List<Product> products = new ArrayList<>();
 
     public SourcingValue() {
         // no-op
@@ -40,11 +40,11 @@ public class SourcingValue {
         this.name = name;
     }
 
-    public Set<Product> getProducts() {
+    public List<Product> getProducts() {
         return products;
     }
 
-    public void setProducts(Set<Product> products) {
+    public void setProducts(List<Product> products) {
         this.products = products;
     }
 

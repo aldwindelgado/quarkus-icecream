@@ -160,6 +160,57 @@ public class ProductResponseDto implements Serializable {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        ProductResponseDto that = (ProductResponseDto) o;
+
+        if (!getName().equals(that.getName())) {
+            return false;
+        }
+        if (getImageClosed() != null ? !getImageClosed().equals(that.getImageClosed())
+            : that.getImageClosed() != null) {
+            return false;
+        }
+        if (getImageOpen() != null ? !getImageOpen().equals(that.getImageOpen())
+            : that.getImageOpen() != null) {
+            return false;
+        }
+        if (getDescription() != null ? !getDescription().equals(that.getDescription())
+            : that.getDescription() != null) {
+            return false;
+        }
+        if (getStory() != null ? !getStory().equals(that.getStory()) : that.getStory() != null) {
+            return false;
+        }
+        if (getAllergyInfo() != null ? !getAllergyInfo().equals(that.getAllergyInfo())
+            : that.getAllergyInfo() != null) {
+            return false;
+        }
+        return getDietaryCertifications() != null ? getDietaryCertifications().equals(
+            that.getDietaryCertifications()) : that.getDietaryCertifications() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getName().hashCode();
+        result = 31 * result + (getImageClosed() != null ? getImageClosed().hashCode() : 0);
+        result = 31 * result + (getImageOpen() != null ? getImageOpen().hashCode() : 0);
+        result = 31 * result + (getDescription() != null ? getDescription().hashCode() : 0);
+        result = 31 * result + (getStory() != null ? getStory().hashCode() : 0);
+        result = 31 * result + (getAllergyInfo() != null ? getAllergyInfo().hashCode() : 0);
+        result =
+            31 * result + (getDietaryCertifications() != null ? getDietaryCertifications().hashCode()
+                : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "ProductResponseDto{" +
             "name='" + name + '\'' +

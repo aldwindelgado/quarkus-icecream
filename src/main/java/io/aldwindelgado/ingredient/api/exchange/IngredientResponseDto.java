@@ -28,6 +28,30 @@ public class IngredientResponseDto implements Serializable {
     }
 
     @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        IngredientResponseDto that = (IngredientResponseDto) o;
+
+        if (!getName().equals(that.getName())) {
+            return false;
+        }
+        return getProducts() != null ? getProducts().equals(that.getProducts()) : that.getProducts() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getName().hashCode();
+        result = 31 * result + (getProducts() != null ? getProducts().hashCode() : 0);
+        return result;
+    }
+
+    @Override
     public String toString() {
         return "IngredientResponseDto{" +
             "name='" + name + '\'' +

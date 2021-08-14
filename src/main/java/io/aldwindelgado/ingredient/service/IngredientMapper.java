@@ -4,7 +4,6 @@ import io.aldwindelgado.ingredient.api.exchange.IngredientRequestDto;
 import io.aldwindelgado.ingredient.api.exchange.IngredientResponseDto;
 import io.aldwindelgado.product.service.Product;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -20,7 +19,7 @@ public interface IngredientMapper {
     IngredientResponseDto toResponseDto(Ingredient ingredient);
 
     @Named("productConverter")
-    static List<String> extractProductName(Set<Product> products) {
+    static List<String> extractProductName(List<Product> products) {
         return products.stream().map(Product::getName).collect(Collectors.toList());
     }
 
@@ -28,6 +27,7 @@ public interface IngredientMapper {
         return ingredients.stream().map(this::toResponseDto).collect(Collectors.toList());
     }
 
+    @Mapping(target = "products", ignore = true)
     Ingredient toEntity(IngredientRequestDto requestDto);
 
 }

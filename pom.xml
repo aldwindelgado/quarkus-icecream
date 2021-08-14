@@ -19,6 +19,8 @@
         <quarkus.platform.version>2.1.2.Final</quarkus.platform.version>
         <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
         <mapstruct.version>1.4.2.Final</mapstruct.version>
+        <to-string-verifier.version>1.4.8</to-string-verifier.version>
+        <equals-verifiver.version>3.7.1</equals-verifiver.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -87,6 +89,23 @@
         <dependency>
             <groupId>io.rest-assured</groupId>
             <artifactId>rest-assured</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.jparams</groupId>
+            <artifactId>to-string-verifier</artifactId>
+            <version>${to-string-verifier.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>nl.jqno.equalsverifier</groupId>
+            <artifactId>equalsverifier</artifactId>
+            <version>${equals-verifiver.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
 

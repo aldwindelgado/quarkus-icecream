@@ -3,8 +3,6 @@ package io.aldwindelgado.sourcingvalue.api;
 import io.aldwindelgado.sourcingvalue.api.exchange.SourcingValueRequestDto;
 import io.aldwindelgado.sourcingvalue.service.SourcingValueService;
 import java.net.URI;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;

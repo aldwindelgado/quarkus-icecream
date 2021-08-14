@@ -1,7 +1,10 @@
 -- See flyway for more information about database automatic migration :)
 
--- starts the primary key value automatic generation at 5000 w/ increment of 1
-CREATE SEQUENCE hibernate_sequence START 5000 INCREMENT 1;
+-- default ID sequencing for Sourcing Value and Ingredient tables
+CREATE SEQUENCE hibernate_sequence START 130 INCREMENT 1;
+
+-- create a custom sequence for product entity
+CREATE SEQUENCE product_seq START 2195 INCREMENT 1;
 
 ----------------------------------------------------------------
 -- CREATE TABLES and IMPORT TEST DATA
@@ -47,4 +50,12 @@ CREATE TABLE map_product_ingredient (
     FOREIGN KEY (ingredient_id) REFERENCES ingredient (id)
 );
 
+----------------------------------------------------------------
+-- CREATE INDEX
+-----------------------------------------------------------------
 
+CREATE INDEX idx_ing_name_lower ON ingredient(lower(name));
+
+CREATE INDEX idx_sov_name_lower ON sourcing_value(lower(name));
+
+CREATE INDEX idx_pro_name_lower ON product(lower(name));

@@ -4,7 +4,6 @@ import io.aldwindelgado.product.service.Product;
 import io.aldwindelgado.sourcingvalue.api.exchange.SourcingValueRequestDto;
 import io.aldwindelgado.sourcingvalue.api.exchange.SourcingValueResponseDto;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -20,7 +19,7 @@ public interface SourcingValueMapper {
     SourcingValueResponseDto toResponseDto(SourcingValue sourcingValue);
 
     @Named("productConverter")
-    static List<String> extractProductName(Set<Product> products) {
+    static List<String> extractProductName(List<Product> products) {
         return products.stream().map(Product::getName).collect(Collectors.toList());
     }
 
@@ -28,5 +27,7 @@ public interface SourcingValueMapper {
         return sourcingValues.stream().map(this::toResponseDto).collect(Collectors.toList());
     }
 
+    @Mapping(target = "products", ignore = true)
     SourcingValue toEntity(SourcingValueRequestDto requestDto);
+
 }

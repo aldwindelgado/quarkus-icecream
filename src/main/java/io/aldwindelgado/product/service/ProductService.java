@@ -64,7 +64,7 @@ public class ProductService implements PanacheRepositoryBase<Product, Long> {
             if (pEx.getCause() instanceof ConstraintViolationException) {
                 ConstraintViolationException cvEx = (ConstraintViolationException) pEx.getCause();
                 if (cvEx.getConstraintName().equals(UNIQUE_PRODUCT_NAME)) {
-                    throw new BadRequestException("Duplicate ingredient name");
+                    throw new BadRequestException("Duplicate product name");
                 }
             }
 

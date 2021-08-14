@@ -2,7 +2,6 @@ package io.aldwindelgado.sourcingvalue.api.exchange;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Set;
 
 /**
  * @author Aldwin Delgado
@@ -26,6 +25,30 @@ public class SourcingValueResponseDto implements Serializable {
 
     public List<String> getProducts() {
         return products;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        SourcingValueResponseDto that = (SourcingValueResponseDto) o;
+
+        if (!getName().equals(that.getName())) {
+            return false;
+        }
+        return getProducts() != null ? getProducts().equals(that.getProducts()) : that.getProducts() == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = getName().hashCode();
+        result = 31 * result + (getProducts() != null ? getProducts().hashCode() : 0);
+        return result;
     }
 
     @Override

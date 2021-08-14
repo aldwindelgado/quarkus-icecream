@@ -5,37 +5,87 @@ import io.aldwindelgado.product.api.exchange.ProductRequestDto;
 import io.aldwindelgado.product.api.exchange.ProductResponseDto;
 import io.aldwindelgado.sourcingvalue.service.SourcingValue;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
+import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 import org.mapstruct.Named;
 
 /**
  * @author Aldwin Delgado
  */
 @Mapper(componentModel = "cdi")
-public interface ProductMapper {
+public abstract class ProductMapper {
 
-    @Mapping(source = "ingredients", target = "ingredients", qualifiedByName = "ingredientConverter")
-    @Mapping(source = "sourcingValues", target = "sourcingValues", qualifiedByName = "sourcingValueConverter")
-    ProductResponseDto toResponseDto(Product product);
+    @Inject
+    EntityManager entityManager;
+
+    @Mapping(target = "ingredients", qualifiedByName = "ingredientConverter")
+    @Mapping(target = "sourcingValues", qualifiedByName = "sourcingValueConverter")
+    abstract ProductResponseDto toResponseDto(Product product);
 
     @Named("ingredientConverter")
-    static List<String> extractIngredientName(Set<Ingredient> ingredients) {
+    protected List<String> extractIngredientName(List<Ingredient> ingredients) {
         return ingredients.stream().map(Ingredient::getName).collect(Collectors.toList());
     }
 
     @Named("sourcingValueConverter")
-    static List<String> extractSourcingValueName(Set<SourcingValue> sourcingValues) {
+    protected List<String> extractSourcingValueName(List<SourcingValue> sourcingValues) {
         return sourcingValues.stream().map(SourcingValue::getName).collect(Collectors.toList());
     }
 
-    default List<ProductResponseDto> toResponseDtos(List<Product> products) {
+    List<ProductResponseDto> toResponseDtos(List<Product> products) {
         return products.stream().map(this::toResponseDto).collect(Collectors.toList());
     }
 
     @Mapping(target = "ingredients", ignore = true)
     @Mapping(target = "sourcingValues", ignore = true)
-    Product toEntity(ProductRequestDto requestDto);
+    abstract Product toEntity(ProductRequestDto requestDto);
+
+    @AfterMapping
+    protected void toEntityAfterMapping(@MappingTarget Product product, ProductRequestDto requestDto) {
+        if (!requestDto.getIngredients().isEmpty()) {
+            final var ingredients = retrieveIngredients(requestDto.getIngredients());
+            product.addIngredients(ingredients);
+        }
+
+        if (!requestDto.getSourcingValues().isEmpty()) {
+            final var sourcingValues = retrieveSourcingValues(requestDto.getSourcingValues());
+            product.addSourcingValues(sourcingValues);
+        }
+    }
+
+    /**
+     * Retrieve sourcing values from database using names, case-insensitive
+     *
+     * @param sourcingValues the sourcing value names
+     * @return the sourcing values from database
+     */
+    @SuppressWarnings("unchecked")
+    private List<SourcingValue> retrieveSourcingValues(List<String> sourcingValues) {
+        final var loweredCaseNames = sourcingValues.stream().map(String::toLowerCase).collect(Collectors.toList());
+
+        return entityManager.createNativeQuery(
+                "SELECT * FROM sourcing_value sov WHERE lower(sov.name) IN :names", SourcingValue.class)
+            .setParameter("names", loweredCaseNames)
+            .getResultList();
+    }
+
+    /**
+     * Retrieve ingredients from database using names, case-insensitive
+     *
+     * @param ingredientNames the ingredient names
+     * @return the ingredients from database
+     */
+    @SuppressWarnings("unchecked")
+    private List<Ingredient> retrieveIngredients(List<String> ingredientNames) {
+        final var loweredCaseNames = ingredientNames.stream().map(String::toLowerCase).collect(Collectors.toList());
+        return entityManager.createNativeQuery(
+                "SELECT * FROM ingredient ing WHERE lower(ing.name) IN :names", Ingredient.class)
+            .setParameter("names", loweredCaseNames)
+            .getResultList();
+    }
 }
