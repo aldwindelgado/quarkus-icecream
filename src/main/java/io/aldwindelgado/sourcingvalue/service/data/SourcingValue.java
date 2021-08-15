@@ -1,4 +1,4 @@
-package io.aldwindelgado.sourcingvalue.service;
+package io.aldwindelgado.sourcingvalue.service.data;
 
 import io.aldwindelgado.product.service.Product;
 import java.util.ArrayList;

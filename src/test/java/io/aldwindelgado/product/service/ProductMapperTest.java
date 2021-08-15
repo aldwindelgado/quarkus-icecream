@@ -1,27 +1,18 @@
 package io.aldwindelgado.product.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.anyString;
 
 import io.aldwindelgado.ingredient.service.Ingredient;
 import io.aldwindelgado.product.api.exchange.ProductRequestDto;
 import io.aldwindelgado.product.api.exchange.ProductResponseDto;
-import io.aldwindelgado.sourcingvalue.service.SourcingValue;
-import io.quarkus.test.Mock;
-import io.quarkus.test.junit.mockito.InjectMock;
+import io.aldwindelgado.sourcingvalue.service.data.SourcingValue;
 import java.util.Collections;
 import java.util.List;
-import javax.persistence.EntityManager;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mapstruct.factory.Mappers;
-import org.mockito.InjectMocks;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
  * @author Aldwin Delgado

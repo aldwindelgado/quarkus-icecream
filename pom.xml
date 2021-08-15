@@ -108,7 +108,6 @@
             <artifactId>mockito-junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
-
         <!-- Test coverage -->
         <dependency>
             <groupId>io.quarkus</groupId>

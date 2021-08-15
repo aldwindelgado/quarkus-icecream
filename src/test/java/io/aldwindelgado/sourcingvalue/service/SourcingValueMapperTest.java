@@ -6,6 +6,7 @@ import io.aldwindelgado.ingredient.service.Ingredient;
 import io.aldwindelgado.product.service.Product;
 import io.aldwindelgado.sourcingvalue.api.exchange.SourcingValueRequestDto;
 import io.aldwindelgado.sourcingvalue.api.exchange.SourcingValueResponseDto;
+import io.aldwindelgado.sourcingvalue.service.data.SourcingValue;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;

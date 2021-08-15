@@ -1,7 +1,7 @@
 package io.aldwindelgado.product.service;
 
 import io.aldwindelgado.ingredient.service.Ingredient;
-import io.aldwindelgado.sourcingvalue.service.SourcingValue;
+import io.aldwindelgado.sourcingvalue.service.data.SourcingValue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;

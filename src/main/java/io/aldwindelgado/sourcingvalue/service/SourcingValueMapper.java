@@ -3,6 +3,7 @@ package io.aldwindelgado.sourcingvalue.service;
 import io.aldwindelgado.product.service.Product;
 import io.aldwindelgado.sourcingvalue.api.exchange.SourcingValueRequestDto;
 import io.aldwindelgado.sourcingvalue.api.exchange.SourcingValueResponseDto;
+import io.aldwindelgado.sourcingvalue.service.data.SourcingValue;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.mapstruct.Mapper;
