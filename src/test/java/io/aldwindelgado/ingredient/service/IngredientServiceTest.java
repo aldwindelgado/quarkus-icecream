@@ -1,10 +1,10 @@
-package io.aldwindelgado.sourcingvalue.service;
+package io.aldwindelgado.ingredient.service;
 
+import io.aldwindelgado.ingredient.api.exchange.IngredientRequestDto;
+import io.aldwindelgado.ingredient.api.exchange.IngredientResponseDto;
+import io.aldwindelgado.ingredient.service.datasource.Ingredient;
+import io.aldwindelgado.ingredient.service.datasource.IngredientRepository;
 import io.aldwindelgado.product.service.datasource.Product;
-import io.aldwindelgado.sourcingvalue.api.exchange.SourcingValueRequestDto;
-import io.aldwindelgado.sourcingvalue.api.exchange.SourcingValueResponseDto;
-import io.aldwindelgado.sourcingvalue.service.datasource.SourcingValue;
-import io.aldwindelgado.sourcingvalue.service.datasource.SourcingValueRepository;
 import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
 import java.sql.SQLException;
@@ -25,18 +25,18 @@ import org.junit.jupiter.api.Test;
  * @author Aldwin Delgado
  */
 @QuarkusTest
-class SourcingValueServiceTest {
+class IngredientServiceTest {
 
     @Inject
-    SourcingValueService service;
+    IngredientService service;
 
     @Inject
-    SourcingValueRepository repository;
+    IngredientRepository repository;
 
-    public static class MockNotEmptySourcingValueRepository extends SourcingValueRepository {
+    public static class MockNotEmptyIngredientRepository extends IngredientRepository {
 
         @Override
-        public List<SourcingValue> getAll() {
+        public List<Ingredient> getAll() {
             final var product = new Product();
             product.setName("existing product");
             product.setDescription("product description");
@@ -45,15 +45,15 @@ class SourcingValueServiceTest {
             product.setAllergyInfo("product allergy info");
             product.setDietaryCertifications("product dietary certifications");
 
-            final var mockedEntity = new SourcingValue();
-            mockedEntity.setName("existing sourcing value");
-            mockedEntity.setProducts(List.of(product));
+            final var ingredient = new Ingredient();
+            ingredient.setName("existing ingredient");
+            ingredient.setProducts(List.of(product));
 
-            return Collections.singletonList(mockedEntity);
+            return Collections.singletonList(ingredient);
         }
 
         @Override
-        public Optional<SourcingValue> getByName(String name) {
+        public Optional<Ingredient> getByName(String name) {
             final var product = new Product();
             product.setName("existing product");
             product.setDescription("product description");
@@ -62,30 +62,31 @@ class SourcingValueServiceTest {
             product.setAllergyInfo("product allergy info");
             product.setDietaryCertifications("product dietary certifications");
 
-            final var mockedEntity = new SourcingValue();
-            mockedEntity.setName("existing sourcing value");
-            mockedEntity.setProducts(List.of(product));
-            return Optional.of(mockedEntity);
+            final var ingredient = new Ingredient();
+            ingredient.setName("existing ingredient");
+            ingredient.setProducts(List.of(product));
+
+            return Optional.of(ingredient);
         }
     }
 
-    public static class MockErrorSourcingValueRepository extends SourcingValueRepository {
+    public static class MockErrorIngredientRepository extends IngredientRepository {
 
         @Override
-        public List<SourcingValue> getAll() {
+        public List<Ingredient> getAll() {
             return Collections.emptyList();
         }
 
         @Override
-        public Optional<SourcingValue> getByName(String name) {
+        public Optional<Ingredient> getByName(String name) {
             return Optional.empty();
         }
 
         @Override
-        public void save(SourcingValue entity) {
-            final var constraintViolateException = new ConstraintViolationException("Duplicate sourcing value name",
-                new SQLException("sql.errorcode.mocked"), "unq_sourcingvalue_name");
-            throw new PersistenceException("Duplicate sourcing value name", constraintViolateException);
+        public void save(Ingredient ingredient) {
+            final var constraintViolateException = new ConstraintViolationException("Duplicate ingredient name",
+                new SQLException("sql.errorcode.mocked"), "unq_ingredient_name");
+            throw new PersistenceException("Duplicate ingredient name", constraintViolateException);
         }
     }
 
@@ -95,23 +96,22 @@ class SourcingValueServiceTest {
 
         @Test
         void getAll_whenRecordIsFound_thenReturnResponse() {
-            QuarkusMock.installMockForInstance(new MockNotEmptySourcingValueRepository(), repository);
-
+            QuarkusMock.installMockForInstance(new MockNotEmptyIngredientRepository(), repository);
             final var actual = service.getAll();
-
             final var expected = List.of(
-                new SourcingValueResponseDto("existing sourcing value", List.of("existing product"))
+                new IngredientResponseDto("existing ingredient", List.of("existing product"))
             );
+
             Assertions.assertEquals(expected, actual);
         }
 
         @Test
         void getAll_whenNoRecordFound_thenThrowNotFoundException() {
-            QuarkusMock.installMockForInstance(new MockErrorSourcingValueRepository(), repository);
+            QuarkusMock.installMockForInstance(new MockErrorIngredientRepository(), repository);
             Assertions.assertThrows(
                 NotFoundException.class,
                 () -> service.getAll(),
-                "No sourcing value exists"
+                "No ingredient exists"
             );
         }
     }
@@ -122,10 +122,10 @@ class SourcingValueServiceTest {
 
         @Test
         void getByName_whenRecordIsFound_thenReturnResponse() {
-            QuarkusMock.installMockForInstance(new MockNotEmptySourcingValueRepository(), repository);
-            final var actual = service.getByName("existing sourcing value");
+            QuarkusMock.installMockForInstance(new MockNotEmptyIngredientRepository(), repository);
+            final var actual = service.getByName("existing ingredient");
 
-            final var expected = new SourcingValueResponseDto("existing sourcing value", List.of("existing product"));
+            final var expected = new IngredientResponseDto("existing ingredient", List.of("existing product"));
             Assertions.assertEquals(expected, actual);
         }
 
@@ -134,17 +134,17 @@ class SourcingValueServiceTest {
             Assertions.assertThrows(
                 BadRequestException.class,
                 () -> service.getByName(null),
-                "Sourcing value's name is required"
+                "Ingredient's name is required"
             );
         }
 
         @Test
         void getByName_whenNameIsNotFound_thenThrowNotFoundException() {
-            QuarkusMock.installMockForInstance(new MockErrorSourcingValueRepository(), repository);
+            QuarkusMock.installMockForInstance(new MockErrorIngredientRepository(), repository);
             Assertions.assertThrows(
                 NotFoundException.class,
-                () -> service.getByName("existing sourcing value"),
-                "Sourcing value with name 'existing sourcing value' does not exist"
+                () -> service.getByName("existing ingredient"),
+                "Ingredient with name 'existing ingredient' does not exist"
             );
         }
     }
@@ -155,15 +155,14 @@ class SourcingValueServiceTest {
 
         @Test
         void save_whenUniqueConstraintIsTriggered_thenThrowBadRequestException() {
-            QuarkusMock.installMockForInstance(new MockErrorSourcingValueRepository(), repository);
-
-            final var request = new SourcingValueRequestDto();
-            request.setName("new sourcing value");
+            QuarkusMock.installMockForInstance(new MockErrorIngredientRepository(), repository);
+            final var request = new IngredientRequestDto();
+            request.setName("new ingredient");
 
             Assertions.assertThrows(
                 BadRequestException.class,
                 () -> service.create(request),
-                "Duplicate sourcing value name"
+                "Duplicate ingredient name"
             );
         }
     }

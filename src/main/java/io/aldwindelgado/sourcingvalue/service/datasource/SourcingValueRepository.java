@@ -1,4 +1,4 @@
-package io.aldwindelgado.sourcingvalue.service.data;
+package io.aldwindelgado.sourcingvalue.service.datasource;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Sort;

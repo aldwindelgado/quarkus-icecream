@@ -2,11 +2,11 @@ package io.aldwindelgado.sourcingvalue.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import io.aldwindelgado.ingredient.service.Ingredient;
-import io.aldwindelgado.product.service.Product;
+import io.aldwindelgado.ingredient.service.datasource.Ingredient;
+import io.aldwindelgado.product.service.datasource.Product;
 import io.aldwindelgado.sourcingvalue.api.exchange.SourcingValueRequestDto;
 import io.aldwindelgado.sourcingvalue.api.exchange.SourcingValueResponseDto;
-import io.aldwindelgado.sourcingvalue.service.data.SourcingValue;
+import io.aldwindelgado.sourcingvalue.service.datasource.SourcingValue;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;

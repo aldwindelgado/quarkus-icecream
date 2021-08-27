@@ -2,7 +2,8 @@ package io.aldwindelgado.ingredient.service;
 
 import io.aldwindelgado.ingredient.api.exchange.IngredientRequestDto;
 import io.aldwindelgado.ingredient.api.exchange.IngredientResponseDto;
-import io.aldwindelgado.product.service.Product;
+import io.aldwindelgado.ingredient.service.datasource.Ingredient;
+import io.aldwindelgado.product.service.datasource.Product;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.mapstruct.Mapper;

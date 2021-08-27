@@ -4,8 +4,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import io.aldwindelgado.ingredient.api.exchange.IngredientRequestDto;
 import io.aldwindelgado.ingredient.api.exchange.IngredientResponseDto;
-import io.aldwindelgado.product.service.Product;
-import io.aldwindelgado.sourcingvalue.service.data.SourcingValue;
+import io.aldwindelgado.ingredient.service.datasource.Ingredient;
+import io.aldwindelgado.product.service.datasource.Product;
+import io.aldwindelgado.sourcingvalue.service.datasource.SourcingValue;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;

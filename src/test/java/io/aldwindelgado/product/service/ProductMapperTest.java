@@ -2,10 +2,11 @@ package io.aldwindelgado.product.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import io.aldwindelgado.ingredient.service.Ingredient;
+import io.aldwindelgado.ingredient.service.datasource.Ingredient;
 import io.aldwindelgado.product.api.exchange.ProductRequestDto;
 import io.aldwindelgado.product.api.exchange.ProductResponseDto;
-import io.aldwindelgado.sourcingvalue.service.data.SourcingValue;
+import io.aldwindelgado.product.service.datasource.Product;
+import io.aldwindelgado.sourcingvalue.service.datasource.SourcingValue;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Disabled;

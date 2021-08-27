@@ -1,7 +1,7 @@
-package io.aldwindelgado.product.service;
+package io.aldwindelgado.product.service.datasource;
 
-import io.aldwindelgado.ingredient.service.Ingredient;
-import io.aldwindelgado.sourcingvalue.service.data.SourcingValue;
+import io.aldwindelgado.ingredient.service.datasource.Ingredient;
+import io.aldwindelgado.sourcingvalue.service.datasource.SourcingValue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -180,18 +180,23 @@ public class Product {
         if (this == o) {
             return true;
         }
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(
-            o)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+
         Product product = (Product) o;
 
-        return Objects.equals(id, product.id);
+        if (getId() != null ? !getId().equals(product.getId()) : product.getId() != null) {
+            return false;
+        }
+        return getName().equals(product.getName());
     }
 
     @Override
     public int hashCode() {
-        return 2042274511;
+        int result = getId() != null ? getId().hashCode() : 0;
+        result = 31 * result + getName().hashCode();
+        return result;
     }
 
     @Override

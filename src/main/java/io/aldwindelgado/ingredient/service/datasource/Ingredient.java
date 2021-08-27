@@ -1,6 +1,6 @@
-package io.aldwindelgado.ingredient.service;
+package io.aldwindelgado.ingredient.service.datasource;
 
-import io.aldwindelgado.product.service.Product;
+import io.aldwindelgado.product.service.datasource.Product;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -11,7 +11,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
-import org.hibernate.Hibernate;
 
 /**
  * @author Aldwin Delgado
@@ -60,18 +59,23 @@ public class Ingredient {
         if (this == o) {
             return true;
         }
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(
-            o)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+
         Ingredient that = (Ingredient) o;
 
-        return Objects.equals(id, that.id);
+        if (!Objects.equals(id, that.id)) {
+            return false;
+        }
+        return getName().equals(that.getName());
     }
 
     @Override
     public int hashCode() {
-        return 1847634289;
+        int result = getId() != null ? getId().hashCode() : 0;
+        result = 31 * result + getName().hashCode();
+        return result;
     }
 
     @Override

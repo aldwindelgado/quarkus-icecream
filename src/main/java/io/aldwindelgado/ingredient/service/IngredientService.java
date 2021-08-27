@@ -2,7 +2,7 @@ package io.aldwindelgado.ingredient.service;
 
 import io.aldwindelgado.ingredient.api.exchange.IngredientRequestDto;
 import io.aldwindelgado.ingredient.api.exchange.IngredientResponseDto;
-import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
+import io.aldwindelgado.ingredient.service.datasource.IngredientRepository;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.PersistenceException;
@@ -14,19 +14,21 @@ import org.hibernate.exception.ConstraintViolationException;
  * @author Aldwin Delgado
  */
 @ApplicationScoped
-public class IngredientService implements PanacheRepositoryBase<Ingredient, Long> {
+public class IngredientService {
 
     // this is the constraint name declared on the database
     private static final String UNIQUE_INGREDIENT_NAME = "unq_ingredient_name";
 
+    private final IngredientRepository repository;
     private final IngredientMapper mapper;
 
-    public IngredientService(IngredientMapper mapper) {
+    public IngredientService(IngredientRepository repository, IngredientMapper mapper) {
+        this.repository = repository;
         this.mapper = mapper;
     }
 
     public List<IngredientResponseDto> getAll() {
-        final var ingredients = findAll().list();
+        final var ingredients = repository.getAll();
         if (ingredients.isEmpty()) {
             throw new NotFoundException("No ingredients exist");
         }
@@ -39,9 +41,9 @@ public class IngredientService implements PanacheRepositoryBase<Ingredient, Long
             throw new BadRequestException("Ingredient's name is required");
         }
 
-        final var ingredient = find("lower(name)", name.toLowerCase()).singleResultOptional();
+        final var ingredient = repository.getByName(name);
         if (ingredient.isEmpty()) {
-            throw new BadRequestException("Ingredient with name '" + name + "' does not exist");
+            throw new NotFoundException("Ingredient with name '" + name + "' does not exist");
         }
 
         return mapper.toResponseDto(ingredient.get());
@@ -59,7 +61,7 @@ public class IngredientService implements PanacheRepositoryBase<Ingredient, Long
         final var ingredient = mapper.toEntity(requestDto);
 
         try {
-            persistAndFlush(ingredient);
+            repository.save(ingredient);
         } catch (PersistenceException pEx) {
             if (pEx.getCause() instanceof ConstraintViolationException) {
                 ConstraintViolationException cvEx = (ConstraintViolationException) pEx.getCause();

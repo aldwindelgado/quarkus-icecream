@@ -1,9 +1,10 @@
 package io.aldwindelgado.product.service;
 
-import io.aldwindelgado.ingredient.service.Ingredient;
+import io.aldwindelgado.ingredient.service.datasource.Ingredient;
 import io.aldwindelgado.product.api.exchange.ProductRequestDto;
 import io.aldwindelgado.product.api.exchange.ProductResponseDto;
-import io.aldwindelgado.sourcingvalue.service.data.SourcingValue;
+import io.aldwindelgado.product.service.datasource.Product;
+import io.aldwindelgado.sourcingvalue.service.datasource.SourcingValue;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.inject.Inject;

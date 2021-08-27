@@ -1,6 +1,6 @@
-package io.aldwindelgado.sourcingvalue.service.data;
+package io.aldwindelgado.sourcingvalue.service.datasource;
 
-import io.aldwindelgado.product.service.Product;
+import io.aldwindelgado.product.service.datasource.Product;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -53,18 +53,23 @@ public class SourcingValue {
         if (this == o) {
             return true;
         }
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(
-            o)) {
+        if (o == null || getClass() != o.getClass()) {
             return false;
         }
+
         SourcingValue that = (SourcingValue) o;
 
-        return Objects.equals(id, that.id);
+        if (!Objects.equals(id, that.id)) {
+            return false;
+        }
+        return getName().equals(that.getName());
     }
 
     @Override
     public int hashCode() {
-        return 476740759;
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + getName().hashCode();
+        return result;
     }
 
     @Override

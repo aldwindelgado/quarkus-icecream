@@ -2,7 +2,7 @@ package io.aldwindelgado.product.service;
 
 import io.aldwindelgado.product.api.exchange.ProductRequestDto;
 import io.aldwindelgado.product.api.exchange.ProductResponseDto;
-import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
+import io.aldwindelgado.product.service.datasource.ProductRepository;
 import java.util.List;
 import javax.enterprise.context.ApplicationScoped;
 import javax.persistence.PersistenceException;
@@ -14,19 +14,21 @@ import org.hibernate.exception.ConstraintViolationException;
  * @author Aldwin Delgado
  */
 @ApplicationScoped
-public class ProductService implements PanacheRepositoryBase<Product, Long> {
+public class ProductService {
 
     // this is the constraint name declared on the database
     private static final String UNIQUE_PRODUCT_NAME = "unq_product_name";
 
+    private final ProductRepository repository;
     private final ProductMapper mapper;
 
-    public ProductService(ProductMapper mapper) {
+    public ProductService(ProductRepository repository, ProductMapper mapper) {
+        this.repository = repository;
         this.mapper = mapper;
     }
 
     public List<ProductResponseDto> getAll() {
-        final var products = findAll().list();
+        final var products = repository.getAll();
         if (products.isEmpty()) {
             throw new NotFoundException("No products exist");
         }
@@ -39,7 +41,7 @@ public class ProductService implements PanacheRepositoryBase<Product, Long> {
             throw new BadRequestException("Product's name is required");
         }
 
-        final var product = find("lower(name)", name.toLowerCase()).singleResultOptional();
+        final var product = repository.getByName(name);
         if (product.isEmpty()) {
             throw new NotFoundException("Product with name '" + name + "' does not exist");
         }
@@ -59,7 +61,7 @@ public class ProductService implements PanacheRepositoryBase<Product, Long> {
         final var product = mapper.toEntity(requestDto);
 
         try {
-            persistAndFlush(product);
+            repository.save(product);
         } catch (PersistenceException pEx) {
             if (pEx.getCause() instanceof ConstraintViolationException) {
                 ConstraintViolationException cvEx = (ConstraintViolationException) pEx.getCause();
