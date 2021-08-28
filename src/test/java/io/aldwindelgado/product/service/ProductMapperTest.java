@@ -28,7 +28,7 @@ class ProductMapperTest {
 
         @Test
         void toResponseDto_thenReturnResponse() {
-            Product product = buildProductEntity();
+            var product = buildProductEntity();
 
             final var actualResponse = mapper.toResponseDto(product);
 
@@ -48,7 +48,7 @@ class ProductMapperTest {
 
         @Test
         void toResponseDto_whenIngredientsAreEmpty_thenReturnResponse() {
-            Product product = buildProductEntity();
+            var product = buildProductEntity();
             product.setIngredients(Collections.emptyList());
 
             final var actualResponse = mapper.toResponseDto(product);
@@ -69,7 +69,7 @@ class ProductMapperTest {
 
         @Test
         void toResponseDto_whenSourcingValuesAreEmpty_thenReturnResponse() {
-            Product product = buildProductEntity();
+            var product = buildProductEntity();
             product.setSourcingValues(Collections.emptyList());
 
             final var actualResponse = mapper.toResponseDto(product);
@@ -96,7 +96,7 @@ class ProductMapperTest {
 
         @Test
         void toResponseDto_thenReturnResponse() {
-            Product product = buildProductEntity();
+            var product = buildProductEntity();
 
             final var actualResponse = mapper.toResponseDtos(List.of(product));
 
@@ -116,7 +116,7 @@ class ProductMapperTest {
 
         @Test
         void toResponseDto_whenIngredientsAreEmpty_thenReturnResponse() {
-            Product product = buildProductEntity();
+            var product = buildProductEntity();
             product.setIngredients(Collections.emptyList());
 
             final var actualResponse = mapper.toResponseDtos(List.of(product));
@@ -137,7 +137,7 @@ class ProductMapperTest {
 
         @Test
         void toResponseDto_whenSourcingValuesAreEmpty_thenReturnResponse() {
-            Product product = buildProductEntity();
+            var product = buildProductEntity();
             product.setSourcingValues(Collections.emptyList());
 
             final var actualResponse = mapper.toResponseDtos(List.of(product));
@@ -193,15 +193,15 @@ class ProductMapperTest {
             request.setIngredients(List.of("existing ingredients"));
             final var actualProduct = mapper.toEntity(request);
 
-            final var expectedSourcingValue = new SourcingValue();
+            var expectedSourcingValue = new SourcingValue();
             expectedSourcingValue.setName("existing sourcing value");
             expectedSourcingValue.setProducts(Collections.emptyList());
 
-            final var expectedIngredient = new Ingredient();
+            var expectedIngredient = new Ingredient();
             expectedIngredient.setName("existing ingredients");
             expectedIngredient.setProducts(Collections.emptyList());
 
-            final var expected = new Product();
+            var expected = new Product();
             expected.setName("new product");
             expected.setImageClosed("/files/images/closed/image.jpg");
             expected.setImageOpen("/files/images/open/image.jpg");
@@ -218,13 +218,13 @@ class ProductMapperTest {
     }
 
     private static Product buildProductEntity() {
-        SourcingValue sourcingValue = new SourcingValue();
+        var sourcingValue = new SourcingValue();
         sourcingValue.setName("existing sourcing value");
 
-        Ingredient ingredient = new Ingredient();
+        var ingredient = new Ingredient();
         ingredient.setName("existing ingredient");
 
-        Product product = new Product();
+        var product = new Product();
         product.setName("test product name");
         product.setImageClosed("/files/images/closed/image.jpg");
         product.setImageOpen("/files/images/open/image.jpg");

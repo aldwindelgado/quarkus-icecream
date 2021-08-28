@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * @author Aldwin Delgado
  */
-public class SourcingValueResponseDto implements Serializable {
+public final class SourcingValueResponseDto implements Serializable {
 
     private static final long serialVersionUID = -7840700679320473933L;
 

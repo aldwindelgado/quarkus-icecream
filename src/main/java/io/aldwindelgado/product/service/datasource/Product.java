@@ -17,7 +17,6 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import org.hibernate.Hibernate;
 
 @Table(name = "product")
 @Entity
@@ -186,17 +185,12 @@ public class Product {
 
         Product product = (Product) o;
 
-        if (getId() != null ? !getId().equals(product.getId()) : product.getId() != null) {
-            return false;
-        }
-        return getName().equals(product.getName());
+        return Objects.equals(id, product.id);
     }
 
     @Override
     public int hashCode() {
-        int result = getId() != null ? getId().hashCode() : 0;
-        result = 31 * result + getName().hashCode();
-        return result;
+        return id != null ? id.hashCode() : 0;
     }
 
     @Override

@@ -3,11 +3,12 @@ package io.aldwindelgado.product.api.exchange;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author Aldwin Delgado
  */
-public class ProductRequestDto implements Serializable {
+public final class ProductRequestDto implements Serializable {
 
     private static final long serialVersionUID = 172167201268071936L;
 
@@ -103,6 +104,50 @@ public class ProductRequestDto implements Serializable {
 
     public List<String> getSourcingValues() {
         return sourcingValues;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        ProductRequestDto that = (ProductRequestDto) o;
+
+        if (!Objects.equals(name, that.name)) {
+            return false;
+        }
+        if (!Objects.equals(imageClosed, that.imageClosed)) {
+            return false;
+        }
+        if (!Objects.equals(imageOpen, that.imageOpen)) {
+            return false;
+        }
+        if (!Objects.equals(description, that.description)) {
+            return false;
+        }
+        if (!Objects.equals(story, that.story)) {
+            return false;
+        }
+        if (!Objects.equals(allergyInfo, that.allergyInfo)) {
+            return false;
+        }
+        return Objects.equals(dietaryCertifications, that.dietaryCertifications);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (imageClosed != null ? imageClosed.hashCode() : 0);
+        result = 31 * result + (imageOpen != null ? imageOpen.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
+        result = 31 * result + (story != null ? story.hashCode() : 0);
+        result = 31 * result + (allergyInfo != null ? allergyInfo.hashCode() : 0);
+        result = 31 * result + (dietaryCertifications != null ? dietaryCertifications.hashCode() : 0);
+        return result;
     }
 
     @Override

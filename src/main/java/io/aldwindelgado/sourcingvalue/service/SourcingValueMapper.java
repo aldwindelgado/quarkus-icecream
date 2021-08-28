@@ -6,6 +6,7 @@ import io.aldwindelgado.sourcingvalue.api.exchange.SourcingValueResponseDto;
 import io.aldwindelgado.sourcingvalue.service.datasource.SourcingValue;
 import java.util.List;
 import java.util.stream.Collectors;
+import org.apache.commons.text.StringEscapeUtils;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
@@ -21,7 +22,8 @@ public interface SourcingValueMapper {
 
     @Named("productConverter")
     static List<String> extractProductName(List<Product> products) {
-        return products.stream().map(Product::getName).collect(Collectors.toList());
+        return products.stream().map(product -> StringEscapeUtils.unescapeJava(product.getName()))
+            .collect(Collectors.toList());
     }
 
     default List<SourcingValueResponseDto> toResponseDtos(List<SourcingValue> sourcingValues) {

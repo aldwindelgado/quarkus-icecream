@@ -1,8 +1,8 @@
-package io.aldwindelgado.ingredient.service.datasource;
+package io.aldwindelgado.sourcingvalue.service.datasource;
 
 import com.jparams.verifier.tostring.ToStringVerifier;
+import io.aldwindelgado.ingredient.service.datasource.Ingredient;
 import io.aldwindelgado.product.service.datasource.Product;
-import io.aldwindelgado.sourcingvalue.service.datasource.SourcingValue;
 import java.util.List;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
@@ -11,11 +11,11 @@ import org.junit.jupiter.api.Test;
 /**
  * @author Aldwin Delgado
  */
-class IngredientTest {
+class SourcingValueTest {
 
     @Test
     void testToStringMethod() {
-        ToStringVerifier.forClass(Ingredient.class)
+        ToStringVerifier.forClass(SourcingValue.class)
             .withIgnoredFields("products")
             .verify();
     }
@@ -54,7 +54,7 @@ class IngredientTest {
         product2.setSourcingValues(List.of(sourcingValue));
         product2.setIngredients(List.of(ingredient));
 
-        EqualsVerifier.simple().forClass(Ingredient.class)
+        EqualsVerifier.simple().forClass(SourcingValue.class)
             .suppress(Warning.SURROGATE_KEY)
             .withNonnullFields("id")
             .withPrefabValues(Product.class, product, product2)

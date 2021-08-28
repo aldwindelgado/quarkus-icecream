@@ -92,7 +92,7 @@ class IngredientMapperTest {
 
             final var actualRequest = mapper.toEntity(request);
 
-            final var expected = new Ingredient();
+            var expected = new Ingredient();
             expected.setName("new ingredient");
             expected.setProducts(Collections.emptyList());
             assertEquals(expected, actualRequest);
@@ -100,13 +100,13 @@ class IngredientMapperTest {
     }
 
     private static Product buildProductEntity() {
-        SourcingValue sourcingValue = new SourcingValue();
+        var sourcingValue = new SourcingValue();
         sourcingValue.setName("sourcing value");
 
-        Ingredient ingredient = new Ingredient();
+        var ingredient = new Ingredient();
         ingredient.setName("ingredient");
 
-        Product product = new Product();
+        var product = new Product();
         product.setName("test product name");
         product.setImageClosed("/files/images/closed/image.jpg");
         product.setImageOpen("/files/images/open/image.jpg");

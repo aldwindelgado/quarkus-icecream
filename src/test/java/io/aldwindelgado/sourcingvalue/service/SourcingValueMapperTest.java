@@ -27,7 +27,7 @@ class SourcingValueMapperTest {
 
         @Test
         void toResponse_whenProductHasValue_thenReturnResponse() {
-            SourcingValue sourcingValue = new SourcingValue();
+            var sourcingValue = new SourcingValue();
             sourcingValue.setName("test sourcing value");
             sourcingValue.setProducts(List.of(buildProductEntity()));
 
@@ -40,7 +40,7 @@ class SourcingValueMapperTest {
 
         @Test
         void toResponse_whenProductIsEmpty_thenReturnResponseWithEmptyProducts() {
-            SourcingValue sourcingValue = new SourcingValue();
+            var sourcingValue = new SourcingValue();
             sourcingValue.setName("test sourcing value");
             sourcingValue.setProducts(Collections.emptyList());
 
@@ -58,26 +58,26 @@ class SourcingValueMapperTest {
 
         @Test
         void toResponseDtos_whenProductHasValue_thenReturnResponse() {
-            SourcingValue sourcingValue = new SourcingValue();
+            var sourcingValue = new SourcingValue();
             sourcingValue.setName("test sourcing value");
             sourcingValue.setProducts(List.of(buildProductEntity()));
 
             final var actualResponse = mapper.toResponseDtos(List.of(sourcingValue));
 
-            List<SourcingValueResponseDto> expectedResponse = List.of(
+            final var expectedResponse = List.of(
                 new SourcingValueResponseDto("test sourcing value", List.of("test product name")));
             assertEquals(expectedResponse, actualResponse);
         }
 
         @Test
         void toResponseDtos_whenProductIsEmpty_thenReturnResponseWithEmptyProduct() {
-            SourcingValue sourcingValue = new SourcingValue();
+            var sourcingValue = new SourcingValue();
             sourcingValue.setName("test sourcing value");
             sourcingValue.setProducts(Collections.emptyList());
 
             final var actualResponse = mapper.toResponseDtos(List.of(sourcingValue));
 
-            List<SourcingValueResponseDto> expectedResponse = List.of(
+            final var expectedResponse = List.of(
                 new SourcingValueResponseDto("test sourcing value", Collections.emptyList()));
             assertEquals(expectedResponse, actualResponse);
         }
@@ -90,12 +90,12 @@ class SourcingValueMapperTest {
 
         @Test
         void toEntity_thenReturnEntity() {
-            SourcingValueRequestDto request = new SourcingValueRequestDto();
+            var request = new SourcingValueRequestDto();
             request.setName("new sourcing value");
 
             final var actualRequest = mapper.toEntity(request);
 
-            final var expected = new SourcingValue();
+            var expected = new SourcingValue();
             expected.setName("new sourcing value");
             expected.setProducts(Collections.emptyList());
             assertEquals(expected, actualRequest);
@@ -103,13 +103,13 @@ class SourcingValueMapperTest {
     }
 
     private static Product buildProductEntity() {
-        SourcingValue sourcingValue = new SourcingValue();
+        var sourcingValue = new SourcingValue();
         sourcingValue.setName("sourcing value");
 
-        Ingredient ingredient = new Ingredient();
+        var ingredient = new Ingredient();
         ingredient.setName("ingredient");
 
-        Product product = new Product();
+        var product = new Product();
         product.setName("test product name");
         product.setImageClosed("/files/images/closed/image.jpg");
         product.setImageOpen("/files/images/open/image.jpg");

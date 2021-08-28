@@ -1,5 +1,8 @@
 package io.aldwindelgado.ingredient.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import io.aldwindelgado.ingredient.api.exchange.IngredientRequestDto;
 import io.aldwindelgado.ingredient.api.exchange.IngredientResponseDto;
 import io.aldwindelgado.ingredient.service.datasource.Ingredient;
@@ -16,7 +19,6 @@ import javax.persistence.PersistenceException;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 import org.hibernate.exception.ConstraintViolationException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -33,7 +35,7 @@ class IngredientServiceTest {
     @Inject
     IngredientRepository repository;
 
-    public static class MockNotEmptyIngredientRepository extends IngredientRepository {
+    static class MockNotEmptyIngredientRepository extends IngredientRepository {
 
         @Override
         public List<Ingredient> getAll() {
@@ -49,7 +51,7 @@ class IngredientServiceTest {
             ingredient.setName("existing ingredient");
             ingredient.setProducts(List.of(product));
 
-            return Collections.singletonList(ingredient);
+            return List.of(ingredient);
         }
 
         @Override
@@ -70,7 +72,7 @@ class IngredientServiceTest {
         }
     }
 
-    public static class MockErrorIngredientRepository extends IngredientRepository {
+    static class MockErrorIngredientRepository extends IngredientRepository {
 
         @Override
         public List<Ingredient> getAll() {
@@ -102,13 +104,13 @@ class IngredientServiceTest {
                 new IngredientResponseDto("existing ingredient", List.of("existing product"))
             );
 
-            Assertions.assertEquals(expected, actual);
+            assertEquals(expected, actual);
         }
 
         @Test
         void getAll_whenNoRecordFound_thenThrowNotFoundException() {
             QuarkusMock.installMockForInstance(new MockErrorIngredientRepository(), repository);
-            Assertions.assertThrows(
+            assertThrows(
                 NotFoundException.class,
                 () -> service.getAll(),
                 "No ingredient exists"
@@ -126,12 +128,12 @@ class IngredientServiceTest {
             final var actual = service.getByName("existing ingredient");
 
             final var expected = new IngredientResponseDto("existing ingredient", List.of("existing product"));
-            Assertions.assertEquals(expected, actual);
+            assertEquals(expected, actual);
         }
 
         @Test
         void getByName_whenNameIsNull_thenThrowBadRequestException() {
-            Assertions.assertThrows(
+            assertThrows(
                 BadRequestException.class,
                 () -> service.getByName(null),
                 "Ingredient's name is required"
@@ -141,7 +143,7 @@ class IngredientServiceTest {
         @Test
         void getByName_whenNameIsNotFound_thenThrowNotFoundException() {
             QuarkusMock.installMockForInstance(new MockErrorIngredientRepository(), repository);
-            Assertions.assertThrows(
+            assertThrows(
                 NotFoundException.class,
                 () -> service.getByName("existing ingredient"),
                 "Ingredient with name 'existing ingredient' does not exist"
@@ -153,16 +155,97 @@ class IngredientServiceTest {
     @Nested
     class Save {
 
+        class MockSaveErrorIngredientRepository extends IngredientRepository {
+
+            @Override
+            public void save(Ingredient ingredient) {
+                throw new PersistenceException("Random persistence exception");
+            }
+        }
+
+        class MockSaveErrorIngredientRepositoryCase2 extends IngredientRepository {
+
+            @Override
+            public void save(Ingredient ingredient) {
+                final var constraintViolateException = new ConstraintViolationException("Some mocked constraint",
+                    new SQLException("sql.errorcode.mocked"), "some_constraint");
+                throw new PersistenceException("Random persistence exception", constraintViolateException);
+            }
+        }
+
+        class MockSuccessSaveIngredientRepository extends IngredientRepository {
+
+            @Override
+            public void save(Ingredient ingredient) {
+                // no-op
+            }
+        }
+
+        @Test
+        void save_thenSuccess() {
+            QuarkusMock.installMockForInstance(new MockSuccessSaveIngredientRepository(), repository);
+            var request = new IngredientRequestDto();
+            request.setName("new ingredient");
+
+            service.create(request);
+        }
+
+        @Test
+        void save_whenRequestIsNull_thenThrowBadRequestException() {
+            assertThrows(
+                BadRequestException.class,
+                () -> service.create(null),
+                "Request body is required"
+            );
+        }
+
+        @Test
+        void save_whenIngredientNameIsNull_thenThrowBadRequestException() {
+            final var request = new IngredientRequestDto();
+
+            assertThrows(
+                BadRequestException.class,
+                () -> service.create(request),
+                "Ingredient name is required"
+            );
+        }
+
         @Test
         void save_whenUniqueConstraintIsTriggered_thenThrowBadRequestException() {
             QuarkusMock.installMockForInstance(new MockErrorIngredientRepository(), repository);
-            final var request = new IngredientRequestDto();
+            var request = new IngredientRequestDto();
             request.setName("new ingredient");
 
-            Assertions.assertThrows(
+            assertThrows(
                 BadRequestException.class,
                 () -> service.create(request),
                 "Duplicate ingredient name"
+            );
+        }
+
+        @Test
+        void save_whenRandomPersistenceExceptionIsTriggered_thenThrowBadRequestException() {
+            QuarkusMock.installMockForInstance(new MockSaveErrorIngredientRepository(), repository);
+            var request = new IngredientRequestDto();
+            request.setName("new ingredient");
+
+            assertThrows(
+                BadRequestException.class,
+                () -> service.create(request),
+                "Invalid request"
+            );
+        }
+
+        @Test
+        void save_whenConstraintViolationExceptionIsTriggered_case2_thenThrowBadRequestException() {
+            QuarkusMock.installMockForInstance(new MockSaveErrorIngredientRepositoryCase2(), repository);
+            var request = new IngredientRequestDto();
+            request.setName("new ingredient");
+
+            assertThrows(
+                BadRequestException.class,
+                () -> service.create(request),
+                "Invalid request"
             );
         }
     }

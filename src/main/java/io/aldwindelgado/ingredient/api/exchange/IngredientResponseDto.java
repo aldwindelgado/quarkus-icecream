@@ -6,7 +6,7 @@ import java.util.List;
 /**
  * @author Aldwin Delgado
  */
-public class IngredientResponseDto implements Serializable {
+public final class IngredientResponseDto implements Serializable {
 
     private static final long serialVersionUID = 5355916465663111534L;
 

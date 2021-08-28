@@ -1,5 +1,7 @@
 package io.aldwindelgado.sourcingvalue.service;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import io.aldwindelgado.product.service.datasource.Product;
 import io.aldwindelgado.sourcingvalue.api.exchange.SourcingValueRequestDto;
 import io.aldwindelgado.sourcingvalue.api.exchange.SourcingValueResponseDto;
@@ -37,7 +39,7 @@ class SourcingValueServiceTest {
 
         @Override
         public List<SourcingValue> getAll() {
-            final var product = new Product();
+            var product = new Product();
             product.setName("existing product");
             product.setDescription("product description");
             product.setImageClosed("/files/images/closed/img.jpg");
@@ -45,16 +47,16 @@ class SourcingValueServiceTest {
             product.setAllergyInfo("product allergy info");
             product.setDietaryCertifications("product dietary certifications");
 
-            final var mockedEntity = new SourcingValue();
+            var mockedEntity = new SourcingValue();
             mockedEntity.setName("existing sourcing value");
             mockedEntity.setProducts(List.of(product));
 
-            return Collections.singletonList(mockedEntity);
+            return List.of(mockedEntity);
         }
 
         @Override
         public Optional<SourcingValue> getByName(String name) {
-            final var product = new Product();
+            var product = new Product();
             product.setName("existing product");
             product.setDescription("product description");
             product.setImageClosed("/files/images/closed/img.jpg");
@@ -62,7 +64,7 @@ class SourcingValueServiceTest {
             product.setAllergyInfo("product allergy info");
             product.setDietaryCertifications("product dietary certifications");
 
-            final var mockedEntity = new SourcingValue();
+            var mockedEntity = new SourcingValue();
             mockedEntity.setName("existing sourcing value");
             mockedEntity.setProducts(List.of(product));
             return Optional.of(mockedEntity);
@@ -108,7 +110,7 @@ class SourcingValueServiceTest {
         @Test
         void getAll_whenNoRecordFound_thenThrowNotFoundException() {
             QuarkusMock.installMockForInstance(new MockErrorSourcingValueRepository(), repository);
-            Assertions.assertThrows(
+            assertThrows(
                 NotFoundException.class,
                 () -> service.getAll(),
                 "No sourcing value exists"
@@ -131,7 +133,7 @@ class SourcingValueServiceTest {
 
         @Test
         void getByName_whenNameIsNull_thenThrowBadRequestException() {
-            Assertions.assertThrows(
+            assertThrows(
                 BadRequestException.class,
                 () -> service.getByName(null),
                 "Sourcing value's name is required"
@@ -141,7 +143,7 @@ class SourcingValueServiceTest {
         @Test
         void getByName_whenNameIsNotFound_thenThrowNotFoundException() {
             QuarkusMock.installMockForInstance(new MockErrorSourcingValueRepository(), repository);
-            Assertions.assertThrows(
+            assertThrows(
                 NotFoundException.class,
                 () -> service.getByName("existing sourcing value"),
                 "Sourcing value with name 'existing sourcing value' does not exist"
@@ -153,17 +155,99 @@ class SourcingValueServiceTest {
     @Nested
     class Save {
 
+        public class MockSaveErrorSourcingValueRepository extends SourcingValueRepository {
+
+            @Override
+            public void save(SourcingValue entity) {
+                throw new PersistenceException("Random persistence exception");
+            }
+
+        }
+
+        public class MockSaveErrorSourcingValueRepositoryCase2 extends SourcingValueRepository {
+
+            @Override
+            public void save(SourcingValue entity) {
+                final var constraintViolateException = new ConstraintViolationException("Some mocked constraint",
+                    new SQLException("sql.errorcode.mocked"), "some_constraint");
+                throw new PersistenceException("Random persistence exception", constraintViolateException);
+            }
+        }
+
+        public class MockSuccessSaveSourcingValueRepository extends SourcingValueRepository {
+
+            @Override
+            public void save(SourcingValue entity) {
+                // no-op
+            }
+        }
+
+        @Test
+        void save_thenSuccess() {
+            QuarkusMock.installMockForInstance(new MockSuccessSaveSourcingValueRepository(), repository);
+            final var request = new SourcingValueRequestDto();
+            request.setName("new sourcing value");
+
+            service.create(request);
+        }
+
+        @Test
+        void save_whenRequestIsNull_thenThrowBadRequestException() {
+            assertThrows(
+                BadRequestException.class,
+                () -> service.create(null),
+                "Request body is required"
+            );
+        }
+
+        @Test
+        void save_whenSourcingValueNameIsNull_thenThrowBadRequestException() {
+            final var request = new SourcingValueRequestDto();
+
+            assertThrows(
+                BadRequestException.class,
+                () -> service.create(request),
+                "Sourcing value name is required"
+            );
+        }
+
         @Test
         void save_whenUniqueConstraintIsTriggered_thenThrowBadRequestException() {
             QuarkusMock.installMockForInstance(new MockErrorSourcingValueRepository(), repository);
 
-            final var request = new SourcingValueRequestDto();
+            var request = new SourcingValueRequestDto();
             request.setName("new sourcing value");
 
-            Assertions.assertThrows(
+            assertThrows(
                 BadRequestException.class,
                 () -> service.create(request),
                 "Duplicate sourcing value name"
+            );
+        }
+
+        @Test
+        void save_whenRandomPersistenceExceptionIsTriggered_thenThrowBadRequestException() {
+            QuarkusMock.installMockForInstance(new MockSaveErrorSourcingValueRepository(), repository);
+            final var request = new SourcingValueRequestDto();
+            request.setName("new sourcing value");
+
+            assertThrows(
+                BadRequestException.class,
+                () -> service.create(request),
+                "Invalid request"
+            );
+        }
+
+        @Test
+        void save_whenConstraintViolationExceptionIsTriggered_case2_thenThrowBadRequestException() {
+            QuarkusMock.installMockForInstance(new MockSaveErrorSourcingValueRepositoryCase2(), repository);
+            final var request = new SourcingValueRequestDto();
+            request.setName("new sourcing value");
+
+            assertThrows(
+                BadRequestException.class,
+                () -> service.create(request),
+                "Invalid request"
             );
         }
     }

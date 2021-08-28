@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import org.apache.commons.text.StringEscapeUtils;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -30,12 +31,14 @@ public abstract class ProductMapper {
 
     @Named("ingredientConverter")
     protected List<String> extractIngredientName(List<Ingredient> ingredients) {
-        return ingredients.stream().map(Ingredient::getName).collect(Collectors.toList());
+        return ingredients.stream().map(ingredient -> StringEscapeUtils.unescapeJava(ingredient.getName()))
+            .collect(Collectors.toList());
     }
 
     @Named("sourcingValueConverter")
     protected List<String> extractSourcingValueName(List<SourcingValue> sourcingValues) {
-        return sourcingValues.stream().map(SourcingValue::getName).collect(Collectors.toList());
+        return sourcingValues.stream().map(sourcingValue -> StringEscapeUtils.unescapeJava(sourcingValue.getName()))
+            .collect(Collectors.toList());
     }
 
     List<ProductResponseDto> toResponseDtos(List<Product> products) {

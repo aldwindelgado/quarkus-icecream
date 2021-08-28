@@ -1,5 +1,8 @@
 package io.aldwindelgado.product.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import io.aldwindelgado.ingredient.service.datasource.Ingredient;
 import io.aldwindelgado.product.api.exchange.ProductRequestDto;
 import io.aldwindelgado.product.api.exchange.ProductResponseDto;
@@ -17,7 +20,6 @@ import javax.persistence.PersistenceException;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 import org.hibernate.exception.ConstraintViolationException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -52,10 +54,10 @@ class ProductServiceTest {
             mockedProduct.setAllergyInfo("product allergy info");
             mockedProduct.setDietaryCertifications("product dietary certifications");
             mockedProduct.setStory("product story");
-            mockedProduct.addSourcingValues(Collections.singletonList(sourcingValue));
-            mockedProduct.addIngredients(Collections.singletonList(ingredient));
+            mockedProduct.addSourcingValues(List.of(sourcingValue));
+            mockedProduct.addIngredients(List.of(ingredient));
 
-            return Collections.singletonList(mockedProduct);
+            return List.of(mockedProduct);
         }
 
         @Override
@@ -74,8 +76,8 @@ class ProductServiceTest {
             mockedProduct.setAllergyInfo("product allergy info");
             mockedProduct.setDietaryCertifications("product dietary certifications");
             mockedProduct.setStory("product story");
-            mockedProduct.addSourcingValues(Collections.singletonList(sourcingValue));
-            mockedProduct.addIngredients(Collections.singletonList(ingredient));
+            mockedProduct.addSourcingValues(List.of(sourcingValue));
+            mockedProduct.addIngredients(List.of(ingredient));
 
             return Optional.of(mockedProduct);
         }
@@ -120,18 +122,18 @@ class ProductServiceTest {
                     .allergyInfo("product allergy info")
                     .dietaryCertifications("product dietary certifications")
                     .story("product story")
-                    .ingredients(Collections.singletonList("existing ingredient"))
-                    .sourcingValues(Collections.singletonList("existing sourcing value"))
+                    .ingredients(List.of("existing ingredient"))
+                    .sourcingValues(List.of("existing sourcing value"))
                     .build()
             );
 
-            Assertions.assertEquals(expected, actual);
+            assertEquals(expected, actual);
         }
 
         @Test
         void getAll_whenNoRecordFound_thenThrowNotFoundException() {
             QuarkusMock.installMockForInstance(new MockErrorProductRepository(), repository);
-            Assertions.assertThrows(
+            assertThrows(
                 NotFoundException.class,
                 () -> service.getAll(),
                 "No product exists"
@@ -156,16 +158,16 @@ class ProductServiceTest {
                 .allergyInfo("product allergy info")
                 .dietaryCertifications("product dietary certifications")
                 .story("product story")
-                .ingredients(Collections.singletonList("existing ingredient"))
-                .sourcingValues(Collections.singletonList("existing sourcing value"))
+                .ingredients(List.of("existing ingredient"))
+                .sourcingValues(List.of("existing sourcing value"))
                 .build();
 
-            Assertions.assertEquals(expected, actual);
+            assertEquals(expected, actual);
         }
 
         @Test
         void getByName_whenNameIsNull_thenThrowBadRequestException() {
-            Assertions.assertThrows(
+            assertThrows(
                 BadRequestException.class,
                 () -> service.getByName(null),
                 "Product's name is required"
@@ -175,7 +177,7 @@ class ProductServiceTest {
         @Test
         void getByName_whenNameIsNotFound_thenThrowNotFoundException() {
             QuarkusMock.installMockForInstance(new MockErrorProductRepository(), repository);
-            Assertions.assertThrows(
+            assertThrows(
                 NotFoundException.class,
                 () -> service.getByName("existing product"),
                 "Product with name 'existing product' does not exist"
@@ -187,11 +189,37 @@ class ProductServiceTest {
     @Nested
     class Save {
 
-        @Test
-        void save_whenUniqueConstraintIsTriggered_thenThrowBadException() {
-            QuarkusMock.installMockForInstance(new MockErrorProductRepository(), repository);
+        class MockSaveErrorProductRepository extends ProductRepository {
 
-            final var request = new ProductRequestDto();
+            @Override
+            public void save(Product entity) {
+                throw new PersistenceException("Random persistence exception");
+            }
+        }
+
+        class MockSaveErrorProductRepositoryCase2 extends ProductRepository {
+
+            @Override
+            public void save(Product entity) {
+                final var constraintViolateException = new ConstraintViolationException("Some mocked constraint",
+                    new SQLException("sql.errorcode.mocked"), "some_constraint");
+                throw new PersistenceException("Random persistence exception", constraintViolateException);
+            }
+        }
+
+        class MockSuccessSaveProductRepository extends ProductRepository {
+
+            @Override
+            public void save(Product entity) {
+                // no-op
+            }
+        }
+
+        @Test
+        void save_thenSuccess() {
+            QuarkusMock.installMockForInstance(new MockSuccessSaveProductRepository(), repository);
+
+            var request = new ProductRequestDto();
             request.setName("new product");
             request.setDescription("new description");
             request.setImageClosed("/files/images/closed/img1.jpg");
@@ -202,10 +230,92 @@ class ProductServiceTest {
             request.setIngredients(List.of("existing ingredient 1", "existing ingredient 2"));
             request.setSourcingValues(List.of("existing sourcing value 1", "existing sourcing value 2"));
 
-            Assertions.assertThrows(
+            service.create(request);
+        }
+
+        @Test
+        void save_whenRequestIsNull_thenThrowBadRequestException() {
+            assertThrows(
+                BadRequestException.class,
+                () -> service.create(null),
+                "Request body is required"
+            );
+        }
+
+        @Test
+        void save_whenProductNameIsNull_thenThrowBadRequestException() {
+            final var request = new ProductRequestDto();
+
+            assertThrows(
+                BadRequestException.class,
+                () -> service.create(request),
+                "Product name is required"
+            );
+        }
+
+        @Test
+        void save_whenUniqueConstraintIsTriggered_thenThrowBadException() {
+            QuarkusMock.installMockForInstance(new MockErrorProductRepository(), repository);
+
+            var request = new ProductRequestDto();
+            request.setName("new product");
+            request.setDescription("new description");
+            request.setImageClosed("/files/images/closed/img1.jpg");
+            request.setImageOpen("/files/images/open/img1.jpg");
+            request.setAllergyInfo("new allergy info");
+            request.setDietaryCertifications("new dietary certifications");
+            request.setStory("new story");
+            request.setIngredients(List.of("existing ingredient 1", "existing ingredient 2"));
+            request.setSourcingValues(List.of("existing sourcing value 1", "existing sourcing value 2"));
+
+            assertThrows(
                 BadRequestException.class,
                 () -> service.create(request),
                 "Duplicate product name"
+            );
+        }
+
+        @Test
+        void save_whenRandomPersistenceExceptionIsTriggered_thenThrowBadRequestException() {
+            QuarkusMock.installMockForInstance(new MockSaveErrorProductRepository(), repository);
+
+            var request = new ProductRequestDto();
+            request.setName("new product");
+            request.setDescription("new description");
+            request.setImageClosed("/files/images/closed/img1.jpg");
+            request.setImageOpen("/files/images/open/img1.jpg");
+            request.setAllergyInfo("new allergy info");
+            request.setDietaryCertifications("new dietary certifications");
+            request.setStory("new story");
+            request.setIngredients(List.of("existing ingredient 1", "existing ingredient 2"));
+            request.setSourcingValues(List.of("existing sourcing value 1", "existing sourcing value 2"));
+
+            assertThrows(
+                BadRequestException.class,
+                () -> service.create(request),
+                "Invalid request"
+            );
+        }
+
+        @Test
+        void save_whenConstraintViolationExceptionIsTriggered_case2_thenThrowBadRequestException() {
+            QuarkusMock.installMockForInstance(new MockSaveErrorProductRepositoryCase2(), repository);
+
+            var request = new ProductRequestDto();
+            request.setName("new product");
+            request.setDescription("new description");
+            request.setImageClosed("/files/images/closed/img1.jpg");
+            request.setImageOpen("/files/images/open/img1.jpg");
+            request.setAllergyInfo("new allergy info");
+            request.setDietaryCertifications("new dietary certifications");
+            request.setStory("new story");
+            request.setIngredients(List.of("existing ingredient 1", "existing ingredient 2"));
+            request.setSourcingValues(List.of("existing sourcing value 1", "existing sourcing value 2"));
+
+            assertThrows(
+                BadRequestException.class,
+                () -> service.create(request),
+                "Invalid request"
             );
         }
     }

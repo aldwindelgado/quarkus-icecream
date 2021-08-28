@@ -3,11 +3,12 @@ package io.aldwindelgado.product.api.exchange;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.text.StringEscapeUtils;
 
 /**
  * @author Aldwin Delgado
  */
-public class ProductResponseDto implements Serializable {
+public final class ProductResponseDto implements Serializable {
 
     private static final long serialVersionUID = 7463713303601720841L;
 
@@ -108,7 +109,8 @@ public class ProductResponseDto implements Serializable {
         }
 
         public ProductResponseBuilder name(String name) {
-            this.name = name;
+            // convert the unicode from the DB properly...
+            this.name = StringEscapeUtils.unescapeJava(name);
             return this;
         }
 
@@ -123,12 +125,14 @@ public class ProductResponseDto implements Serializable {
         }
 
         public ProductResponseBuilder description(String description) {
-            this.description = description;
+            // convert the unicode from the DB properly...
+            this.description = StringEscapeUtils.unescapeJava(description);
             return this;
         }
 
         public ProductResponseBuilder story(String story) {
-            this.story = story;
+            // convert the unicode from the DB properly...
+            this.story = StringEscapeUtils.unescapeJava(story);
             return this;
         }
 

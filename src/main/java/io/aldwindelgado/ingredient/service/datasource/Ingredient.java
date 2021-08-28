@@ -34,24 +34,28 @@ public class Ingredient {
         // no-op
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setProducts(List<Product> products) {
-        this.products = products;
-    }
-
     public Long getId() {
         return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getName() {
         return name;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public List<Product> getProducts() {
         return products;
+    }
+
+    public void setProducts(List<Product> products) {
+        this.products = products;
     }
 
     @Override
@@ -65,17 +69,12 @@ public class Ingredient {
 
         Ingredient that = (Ingredient) o;
 
-        if (!Objects.equals(id, that.id)) {
-            return false;
-        }
-        return getName().equals(that.getName());
+        return Objects.equals(id, that.id);
     }
 
     @Override
     public int hashCode() {
-        int result = getId() != null ? getId().hashCode() : 0;
-        result = 31 * result + getName().hashCode();
-        return result;
+        return id != null ? id.hashCode() : 0;
     }
 
     @Override

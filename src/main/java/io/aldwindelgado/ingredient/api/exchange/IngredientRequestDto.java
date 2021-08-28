@@ -1,11 +1,12 @@
 package io.aldwindelgado.ingredient.api.exchange;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * @author Aldwin Delgado
  */
-public class IngredientRequestDto implements Serializable {
+public final class IngredientRequestDto implements Serializable {
 
     private static final long serialVersionUID = -881854355875614830L;
 
@@ -21,6 +22,25 @@ public class IngredientRequestDto implements Serializable {
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        IngredientRequestDto that = (IngredientRequestDto) o;
+
+        return Objects.equals(name, that.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name != null ? name.hashCode() : 0;
     }
 
     @Override
