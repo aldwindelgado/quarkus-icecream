@@ -1,6 +1,7 @@
 package io.aldwindelgado.ingredient.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import io.aldwindelgado.ingredient.api.exchange.IngredientRequestDto;
 import io.aldwindelgado.ingredient.api.exchange.IngredientResponseDto;
@@ -27,26 +28,33 @@ class IngredientMapperTest {
 
         @Test
         void toResponseDto_whenProductHasValue_thenReturnResponse() {
-            Ingredient ingredient = new Ingredient();
+            var ingredient = new Ingredient();
             ingredient.setName("test ingredient");
             ingredient.setProducts(List.of(buildProductEntity()));
 
-            final var actualResponse = mapper.toResponseDto(ingredient);
+            final var actualDto = mapper.toResponseDto(ingredient);
 
-            final var expectedResponse = new IngredientResponseDto("test ingredient", List.of("test product name"));
-            assertEquals(expectedResponse, actualResponse);
+            final var expectedDto = new IngredientResponseDto("test ingredient", List.of("test product name"));
+            assertEquals(expectedDto, actualDto);
         }
 
         @Test
         void toResponseDto_whenProductIsEmpty_thenReturnResponseWithEmptyProduct() {
-            Ingredient ingredient = new Ingredient();
+            var ingredient = new Ingredient();
             ingredient.setName("test ingredient");
             ingredient.setProducts(Collections.emptyList());
 
-            final var actualResponse = mapper.toResponseDto(ingredient);
+            final var actualDto = mapper.toResponseDto(ingredient);
 
-            final var expectedResponse = new IngredientResponseDto("test ingredient", Collections.emptyList());
-            assertEquals(expectedResponse, actualResponse);
+            final var expectedDto = new IngredientResponseDto("test ingredient", Collections.emptyList());
+            assertEquals(expectedDto, actualDto);
+        }
+
+        @Test
+        void toResponseDto_whenInputIsNull_thenReturnNull() {
+            final var actualDto = mapper.toResponseDto(null);
+
+            assertNull(actualDto);
         }
 
     }
@@ -57,27 +65,27 @@ class IngredientMapperTest {
 
         @Test
         void toResponseDtos_whenProductHasValue_thenReturnResponse() {
-            Ingredient ingredient = new Ingredient();
+            var ingredient = new Ingredient();
             ingredient.setName("test ingredient");
             ingredient.setProducts(List.of(buildProductEntity()));
 
-            final var actualResponse = mapper.toResponseDtos(List.of(ingredient));
+            final var actualDto = mapper.toResponseDtos(List.of(ingredient));
 
-            final var expectedResponse = List.of(
+            final var expectedDto = List.of(
                 new IngredientResponseDto("test ingredient", List.of("test product name")));
-            assertEquals(expectedResponse, actualResponse);
+            assertEquals(expectedDto, actualDto);
         }
 
         @Test
         void toResponseDtos_whenProductIsEmpty_thenReturnResponseWithEmptyProduct() {
-            Ingredient ingredient = new Ingredient();
+            var ingredient = new Ingredient();
             ingredient.setName("test ingredient");
             ingredient.setProducts(Collections.emptyList());
 
-            final var actualResponse = mapper.toResponseDtos(List.of(ingredient));
+            final var actualDto = mapper.toResponseDtos(List.of(ingredient));
 
-            final var expectedResponse = List.of(new IngredientResponseDto("test ingredient", Collections.emptyList()));
-            assertEquals(expectedResponse, actualResponse);
+            final var expectedDto = List.of(new IngredientResponseDto("test ingredient", Collections.emptyList()));
+            assertEquals(expectedDto, actualDto);
         }
     }
 
@@ -87,15 +95,22 @@ class IngredientMapperTest {
 
         @Test
         void toEntity_thenReturnEntity() {
-            IngredientRequestDto request = new IngredientRequestDto();
+            var request = new IngredientRequestDto();
             request.setName("test ingredient");
 
-            final var actualRequest = mapper.toEntity(request);
+            final var actualEntity = mapper.toEntity(request);
 
-            var expected = new Ingredient();
-            expected.setName("new ingredient");
-            expected.setProducts(Collections.emptyList());
-            assertEquals(expected, actualRequest);
+            var expectedEntity = new Ingredient();
+            expectedEntity.setName("new ingredient");
+            expectedEntity.setProducts(Collections.emptyList());
+            assertEquals(expectedEntity, actualEntity);
+        }
+
+        @Test
+        void toEntity_whenInputIsNull_thenReturnNull() {
+            final var actualEntity = mapper.toEntity(null);
+
+            assertNull(actualEntity);
         }
     }
 

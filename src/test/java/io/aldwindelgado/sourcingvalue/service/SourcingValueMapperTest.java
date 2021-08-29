@@ -1,6 +1,7 @@
 package io.aldwindelgado.sourcingvalue.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import io.aldwindelgado.ingredient.service.datasource.Ingredient;
 import io.aldwindelgado.product.service.datasource.Product;
@@ -26,30 +27,36 @@ class SourcingValueMapperTest {
     class ToResponseDto {
 
         @Test
-        void toResponse_whenProductHasValue_thenReturnResponse() {
+        void toResponseDto_whenProductHasValue_thenReturnResponse() {
             var sourcingValue = new SourcingValue();
             sourcingValue.setName("test sourcing value");
             sourcingValue.setProducts(List.of(buildProductEntity()));
 
-            final var actualResponse = mapper.toResponseDto(sourcingValue);
+            final var actualDto = mapper.toResponseDto(sourcingValue);
 
-            final var expectedResponse = new SourcingValueResponseDto("test sourcing value", List.of("test product name"));
-            assertEquals(expectedResponse, actualResponse);
+            final var expectedDto = new SourcingValueResponseDto("test sourcing value", List.of("test product name"));
+            assertEquals(expectedDto, actualDto);
 
         }
 
         @Test
-        void toResponse_whenProductIsEmpty_thenReturnResponseWithEmptyProducts() {
+        void toResponseDto_whenProductIsEmpty_thenReturnResponseWithEmptyProducts() {
             var sourcingValue = new SourcingValue();
             sourcingValue.setName("test sourcing value");
             sourcingValue.setProducts(Collections.emptyList());
 
-            final var actualResponse = mapper.toResponseDto(sourcingValue);
+            final var actualDto = mapper.toResponseDto(sourcingValue);
 
-            final var expectedResponse = new SourcingValueResponseDto("test sourcing value", Collections.emptyList());
-            assertEquals(expectedResponse, actualResponse);
+            final var expectedDto = new SourcingValueResponseDto("test sourcing value", Collections.emptyList());
+            assertEquals(expectedDto, actualDto);
         }
 
+        @Test
+        void toResponseDto_whenInputIsNull_thenReturnNull() {
+            final var actualDto = mapper.toResponseDto(null);
+
+            assertNull(actualDto);
+        }
     }
 
     @DisplayName("Test toResponseDtos mapping")
@@ -62,11 +69,11 @@ class SourcingValueMapperTest {
             sourcingValue.setName("test sourcing value");
             sourcingValue.setProducts(List.of(buildProductEntity()));
 
-            final var actualResponse = mapper.toResponseDtos(List.of(sourcingValue));
+            final var actualDto = mapper.toResponseDtos(List.of(sourcingValue));
 
-            final var expectedResponse = List.of(
+            final var expectedDto = List.of(
                 new SourcingValueResponseDto("test sourcing value", List.of("test product name")));
-            assertEquals(expectedResponse, actualResponse);
+            assertEquals(expectedDto, actualDto);
         }
 
         @Test
@@ -75,11 +82,11 @@ class SourcingValueMapperTest {
             sourcingValue.setName("test sourcing value");
             sourcingValue.setProducts(Collections.emptyList());
 
-            final var actualResponse = mapper.toResponseDtos(List.of(sourcingValue));
+            final var actualDto = mapper.toResponseDtos(List.of(sourcingValue));
 
-            final var expectedResponse = List.of(
+            final var expectedDto = List.of(
                 new SourcingValueResponseDto("test sourcing value", Collections.emptyList()));
-            assertEquals(expectedResponse, actualResponse);
+            assertEquals(expectedDto, actualDto);
         }
 
     }
@@ -93,12 +100,19 @@ class SourcingValueMapperTest {
             var request = new SourcingValueRequestDto();
             request.setName("new sourcing value");
 
-            final var actualRequest = mapper.toEntity(request);
+            final var actualEntity = mapper.toEntity(request);
 
-            var expected = new SourcingValue();
-            expected.setName("new sourcing value");
-            expected.setProducts(Collections.emptyList());
-            assertEquals(expected, actualRequest);
+            var expectedEntity = new SourcingValue();
+            expectedEntity.setName("new sourcing value");
+            expectedEntity.setProducts(Collections.emptyList());
+            assertEquals(expectedEntity, actualEntity);
+        }
+
+        @Test
+        void toEntity_whenInputIsNull_thenReturnNull() {
+            final var actualEntity = mapper.toEntity(null);
+
+            assertNull(actualEntity);
         }
     }
 

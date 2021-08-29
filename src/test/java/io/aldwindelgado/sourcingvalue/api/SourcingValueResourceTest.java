@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.aldwindelgado.sourcingvalue.api.exchange.SourcingValueRequestDto;
 import io.aldwindelgado.sourcingvalue.api.exchange.SourcingValueResponseDto;
 import io.aldwindelgado.sourcingvalue.service.SourcingValueService;
+import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.junit.mockito.InjectMock;
 import io.restassured.RestAssured;
@@ -27,11 +28,11 @@ import org.mockito.Mockito;
  * @author Aldwin Delgado
  */
 @QuarkusTest
+@TestHTTPEndpoint(SourcingValueResource.class)
 class SourcingValueResourceTest {
 
-    private static final String APPLICATION_PROBLEM_JSON = "application/problem+json";
-    private final static String GET_BY_NAME_URI = "/sourcing-values/{name}";
-    private final static String BASE_URI = "/sourcing-values";
+    private static final String PROBLEM_JSON_CONTENT_TYPE = "application/problem+json";
+    private final static String GET_BY_NAME_PATH = "{name}";
 
     @InjectMock
     SourcingValueService service;
@@ -43,7 +44,7 @@ class SourcingValueResourceTest {
 
         RestAssured.given()
             .pathParam("name", "non-gmo")
-            .when().get(GET_BY_NAME_URI)
+            .when().get(GET_BY_NAME_PATH)
             .then()
             .statusCode(200)
             .contentType(ContentType.JSON)
@@ -58,10 +59,10 @@ class SourcingValueResourceTest {
 
         RestAssured.given()
             .pathParam("name", "non-gmo")
-            .when().get(GET_BY_NAME_URI)
+            .when().get(GET_BY_NAME_PATH)
             .then()
             .statusCode(400)
-            .contentType(APPLICATION_PROBLEM_JSON)
+            .contentType(PROBLEM_JSON_CONTENT_TYPE)
             .body("$", Matchers.hasKey("timestamp"))
             .body("message", Matchers.equalTo("Mocked response message"));
     }
@@ -73,10 +74,10 @@ class SourcingValueResourceTest {
 
         RestAssured.given()
             .pathParam("name", "non-gmo")
-            .when().get(GET_BY_NAME_URI)
+            .when().get(GET_BY_NAME_PATH)
             .then()
             .statusCode(404)
-            .contentType(APPLICATION_PROBLEM_JSON)
+            .contentType(PROBLEM_JSON_CONTENT_TYPE)
             .body("$", Matchers.hasKey("timestamp"))
             .body("message", Matchers.equalTo("Mocked response message"));
     }
@@ -88,10 +89,10 @@ class SourcingValueResourceTest {
 
         RestAssured.given()
             .pathParam("name", "non-gmo")
-            .when().get(GET_BY_NAME_URI)
+            .when().get(GET_BY_NAME_PATH)
             .then()
             .statusCode(500)
-            .contentType(APPLICATION_PROBLEM_JSON)
+            .contentType(PROBLEM_JSON_CONTENT_TYPE)
             .body("$", Matchers.hasKey("timestamp"))
             .body("message", Matchers.equalTo("Mocked response message"));
     }
@@ -102,7 +103,7 @@ class SourcingValueResourceTest {
         Mockito.when(service.getAll()).thenReturn(response);
 
         RestAssured.given()
-            .when().get(BASE_URI)
+            .when().get()
             .then()
             .statusCode(200)
             .contentType(ContentType.JSON)
@@ -116,10 +117,10 @@ class SourcingValueResourceTest {
         Mockito.when(service.getAll()).thenThrow(exception);
 
         RestAssured.given()
-            .when().get(BASE_URI)
+            .when().get()
             .then()
             .statusCode(404)
-            .contentType(APPLICATION_PROBLEM_JSON)
+            .contentType(PROBLEM_JSON_CONTENT_TYPE)
             .body("$", Matchers.hasKey("timestamp"))
             .body("message", Matchers.equalTo("Mocked response message"));
     }
@@ -130,10 +131,10 @@ class SourcingValueResourceTest {
         Mockito.when(service.getAll()).thenThrow(exception);
 
         RestAssured.given()
-            .when().get(BASE_URI)
+            .when().get()
             .then()
             .statusCode(500)
-            .contentType(APPLICATION_PROBLEM_JSON)
+            .contentType(PROBLEM_JSON_CONTENT_TYPE)
             .body("$", Matchers.hasKey("timestamp"))
             .body("message", Matchers.equalTo("Mocked response message"));
     }
@@ -148,7 +149,7 @@ class SourcingValueResourceTest {
         final var response = RestAssured.given()
             .contentType(ContentType.JSON)
             .body(request)
-            .when().post(BASE_URI)
+            .when().post()
             .then()
             .statusCode(201)
             .header("Location", Matchers.endsWith("/sourcing-values/non-gmo"))
@@ -171,10 +172,10 @@ class SourcingValueResourceTest {
         RestAssured.given()
             .contentType(ContentType.JSON)
             .body(request)
-            .when().post(BASE_URI)
+            .when().post()
             .then()
             .statusCode(400)
-            .contentType(APPLICATION_PROBLEM_JSON)
+            .contentType(PROBLEM_JSON_CONTENT_TYPE)
             .body("$", Matchers.hasKey("timestamp"))
             .body("message", Matchers.equalTo("Mocked response message"));
     }
@@ -192,10 +193,10 @@ class SourcingValueResourceTest {
         RestAssured.given()
             .contentType(ContentType.JSON)
             .body(request)
-            .when().post(BASE_URI)
+            .when().post()
             .then()
             .statusCode(500)
-            .contentType(APPLICATION_PROBLEM_JSON)
+            .contentType(PROBLEM_JSON_CONTENT_TYPE)
             .body("$", Matchers.hasKey("timestamp"))
             .body("message", Matchers.equalTo("Mocked response message"));
     }

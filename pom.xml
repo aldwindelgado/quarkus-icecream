@@ -21,6 +21,7 @@
         <mapstruct.version>1.4.2.Final</mapstruct.version>
         <to-string-verifier.version>1.4.8</to-string-verifier.version>
         <equals-verifiver.version>3.7.1</equals-verifiver.version>
+        <jacoco.version>0.8.7</jacoco.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -108,10 +109,10 @@
             <artifactId>mockito-junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
-        <!-- Test coverage -->
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-jacoco</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -159,9 +160,66 @@
                     <systemPropertyVariables>
                         <java.util.logging.manager>org.jboss.logmanager.LogManager
                         </java.util.logging.manager>
+                        <!--suppress UnresolvedMavenProperty -->
                         <maven.home>${maven.home}</maven.home>
                     </systemPropertyVariables>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>default-prepare-agent</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                        <configuration>
+                            <exclClassLoaders>*QuarkusClassLoader</exclClassLoaders>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>default-report</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                        <!-- default target/jacoco/site/* -->
+                        <configuration>
+                            <outputDirectory>target/jacoco-report</outputDirectory>
+                        </configuration>
+                    </execution>
+                    <!-- Only pass the build if the coverage for tests are met -->
+                    <!-- Disabled for now -->
+                    <!--                    <execution>-->
+                    <!--                        <id>jacoco-check</id>-->
+                    <!--                        <goals>-->
+                    <!--                            <goal>check</goal>-->
+                    <!--                        </goals>-->
+                    <!--                        <phase>test</phase>-->
+                    <!--                        <configuration>-->
+                    <!--                            <dataFile>${project.build.directory}/jacoco.exec</dataFile>-->
+                    <!--                            <rules>-->
+                    <!--                                <rule>-->
+                    <!--                                    <element>BUNDLE</element>-->
+                    <!--                                    <limits>-->
+                    <!--                                        <limit>-->
+                    <!--                                            <counter>LINE</counter>-->
+                    <!--                                            <value>COVEREDRATIO</value>-->
+                    <!--                                            <minimum>0.9</minimum>-->
+                    <!--                                        </limit>-->
+                    <!--                                        <limit>-->
+                    <!--                                            <counter>BRANCH</counter>-->
+                    <!--                                            <value>COVEREDRATIO</value>-->
+                    <!--                                            <minimum>0.9</minimum>-->
+                    <!--                                        </limit>-->
+                    <!--                                    </limits>-->
+                    <!--                                </rule>-->
+                    <!--                            </rules>-->
+                    <!--                        </configuration>-->
+                    <!--                    </execution>-->
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -191,6 +249,7 @@
                                         </native.image.path>
                                         <java.util.logging.manager>org.jboss.logmanager.LogManager
                                         </java.util.logging.manager>
+                                        <!--suppress UnresolvedMavenProperty -->
                                         <maven.home>${maven.home}</maven.home>
                                     </systemPropertyVariables>
                                 </configuration>

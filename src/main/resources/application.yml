@@ -24,6 +24,5 @@ quarkus:
         # default to debug
         level: INFO
         category:
-            "io.aldwindelgado":
-                level: DEBUG
+            io.aldwindelgado.level: DEBUG
 

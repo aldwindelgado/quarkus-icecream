@@ -1,6 +1,7 @@
 package io.aldwindelgado.product.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 import io.aldwindelgado.ingredient.service.datasource.Ingredient;
 import io.aldwindelgado.product.api.exchange.ProductRequestDto;
@@ -30,9 +31,9 @@ class ProductMapperTest {
         void toResponseDto_thenReturnResponse() {
             var product = buildProductEntity();
 
-            final var actualResponse = mapper.toResponseDto(product);
+            final var actualDto = mapper.toResponseDto(product);
 
-            final var expectedResponse = ProductResponseDto.builder()
+            final var expectedDto = ProductResponseDto.builder()
                 .name("test product name")
                 .imageClosed("/files/images/closed/image.jpg")
                 .imageOpen("/files/images/open/image.jpg")
@@ -43,7 +44,7 @@ class ProductMapperTest {
                 .ingredients(List.of("existing ingredient"))
                 .sourcingValues(List.of("existing sourcing value"))
                 .build();
-            assertEquals(expectedResponse, actualResponse);
+            assertEquals(expectedDto, actualDto);
         }
 
         @Test
@@ -51,9 +52,9 @@ class ProductMapperTest {
             var product = buildProductEntity();
             product.setIngredients(Collections.emptyList());
 
-            final var actualResponse = mapper.toResponseDto(product);
+            final var actualDto = mapper.toResponseDto(product);
 
-            final var expectedResponse = ProductResponseDto.builder()
+            final var expectedDto = ProductResponseDto.builder()
                 .name("test product name")
                 .imageClosed("/files/images/closed/image.jpg")
                 .imageOpen("/files/images/open/image.jpg")
@@ -64,7 +65,7 @@ class ProductMapperTest {
                 .ingredients(Collections.emptyList())
                 .sourcingValues(List.of("existing sourcing value"))
                 .build();
-            assertEquals(expectedResponse, actualResponse);
+            assertEquals(expectedDto, actualDto);
         }
 
         @Test
@@ -72,9 +73,9 @@ class ProductMapperTest {
             var product = buildProductEntity();
             product.setSourcingValues(Collections.emptyList());
 
-            final var actualResponse = mapper.toResponseDto(product);
+            final var actualDto = mapper.toResponseDto(product);
 
-            final var expectedResponse = ProductResponseDto.builder()
+            final var expectedDto = ProductResponseDto.builder()
                 .name("test product name")
                 .imageClosed("/files/images/closed/image.jpg")
                 .imageOpen("/files/images/open/image.jpg")
@@ -85,9 +86,15 @@ class ProductMapperTest {
                 .ingredients(List.of("existing ingredient"))
                 .sourcingValues(Collections.emptyList())
                 .build();
-            assertEquals(expectedResponse, actualResponse);
+            assertEquals(expectedDto, actualDto);
         }
 
+        @Test
+        void toResponseDto_whenInputIsNull_thenReturnNull() {
+            final var actualDto = mapper.toResponseDto(null);
+
+            assertNull(actualDto);
+        }
     }
 
     @DisplayName("Test toResponseDtos mapping")
@@ -98,9 +105,9 @@ class ProductMapperTest {
         void toResponseDto_thenReturnResponse() {
             var product = buildProductEntity();
 
-            final var actualResponse = mapper.toResponseDtos(List.of(product));
+            final var actualDto = mapper.toResponseDtos(List.of(product));
 
-            final var expectedResponse = List.of(ProductResponseDto.builder()
+            final var expectedDto = List.of(ProductResponseDto.builder()
                 .name("test product name")
                 .imageClosed("/files/images/closed/image.jpg")
                 .imageOpen("/files/images/open/image.jpg")
@@ -111,7 +118,7 @@ class ProductMapperTest {
                 .ingredients(List.of("existing ingredient"))
                 .sourcingValues(List.of("existing sourcing value"))
                 .build());
-            assertEquals(expectedResponse, actualResponse);
+            assertEquals(expectedDto, actualDto);
         }
 
         @Test
@@ -119,9 +126,9 @@ class ProductMapperTest {
             var product = buildProductEntity();
             product.setIngredients(Collections.emptyList());
 
-            final var actualResponse = mapper.toResponseDtos(List.of(product));
+            final var actualDto = mapper.toResponseDtos(List.of(product));
 
-            final var expectedResponse = List.of(ProductResponseDto.builder()
+            final var expectedDto = List.of(ProductResponseDto.builder()
                 .name("test product name")
                 .imageClosed("/files/images/closed/image.jpg")
                 .imageOpen("/files/images/open/image.jpg")
@@ -132,7 +139,7 @@ class ProductMapperTest {
                 .ingredients(Collections.emptyList())
                 .sourcingValues(List.of("existing sourcing value"))
                 .build());
-            assertEquals(expectedResponse, actualResponse);
+            assertEquals(expectedDto, actualDto);
         }
 
         @Test
@@ -140,9 +147,9 @@ class ProductMapperTest {
             var product = buildProductEntity();
             product.setSourcingValues(Collections.emptyList());
 
-            final var actualResponse = mapper.toResponseDtos(List.of(product));
+            final var actualDto = mapper.toResponseDtos(List.of(product));
 
-            final var expectedResponse = List.of(ProductResponseDto.builder()
+            final var expectedDto = List.of(ProductResponseDto.builder()
                 .name("test product name")
                 .imageClosed("/files/images/closed/image.jpg")
                 .imageOpen("/files/images/open/image.jpg")
@@ -153,18 +160,18 @@ class ProductMapperTest {
                 .ingredients(List.of("existing ingredient"))
                 .sourcingValues(Collections.emptyList())
                 .build());
-            assertEquals(expectedResponse, actualResponse);
+            assertEquals(expectedDto, actualDto);
         }
 
     }
 
-    @Disabled("Mock test entity manager")
+    @Disabled("Having issues with entity manager here...")
     @DisplayName("Test toEntity mapping")
     @Nested
     class ToEntity {
 
         @Test
-        void testToEntity_thenReturn() {
+        void testToEntity_thenReturnEntity() {
 //            final var mockedIngredientFromDb = new Ingredient();
 //            mockedIngredientFromDb.setName("existing ingredient");
 //            mockedIngredientFromDb.setProducts(Collections.emptyList());
@@ -181,7 +188,7 @@ class ProductMapperTest {
 //                    .getResultList())
 //                .thenReturn(List.of(mockedSourcingValueFromDb));
 
-            ProductRequestDto request = new ProductRequestDto();
+            var request = new ProductRequestDto();
             request.setName("new product");
             request.setImageClosed("/files/images/closed/image.jpg");
             request.setImageOpen("/files/images/open/image.jpg");
@@ -191,7 +198,7 @@ class ProductMapperTest {
             request.setDietaryCertifications("new dietary certification");
             request.setSourcingValues(List.of("existing sourcing value"));
             request.setIngredients(List.of("existing ingredients"));
-            final var actualProduct = mapper.toEntity(request);
+            final var actualEntity = mapper.toEntity(request);
 
             var expectedSourcingValue = new SourcingValue();
             expectedSourcingValue.setName("existing sourcing value");
@@ -201,20 +208,26 @@ class ProductMapperTest {
             expectedIngredient.setName("existing ingredients");
             expectedIngredient.setProducts(Collections.emptyList());
 
-            var expected = new Product();
-            expected.setName("new product");
-            expected.setImageClosed("/files/images/closed/image.jpg");
-            expected.setImageOpen("/files/images/open/image.jpg");
-            expected.setDescription("new description");
-            expected.setStory("new story");
-            expected.setAllergyInfo("new allergy info");
-            expected.setDietaryCertifications("new dietary certification");
-            expected.setIngredients(List.of(expectedIngredient));
-            expected.setSourcingValues(List.of(expectedSourcingValue));
+            var expectedEntity = new Product();
+            expectedEntity.setName("new product");
+            expectedEntity.setImageClosed("/files/images/closed/image.jpg");
+            expectedEntity.setImageOpen("/files/images/open/image.jpg");
+            expectedEntity.setDescription("new description");
+            expectedEntity.setStory("new story");
+            expectedEntity.setAllergyInfo("new allergy info");
+            expectedEntity.setDietaryCertifications("new dietary certification");
+            expectedEntity.setIngredients(List.of(expectedIngredient));
+            expectedEntity.setSourcingValues(List.of(expectedSourcingValue));
 
-            assertEquals(expected, actualProduct);
+            assertEquals(expectedEntity, actualEntity);
         }
 
+        @Test
+        void testToEntity_whenInputIsNull_thenReturnNull() {
+            final var actualEntity = mapper.toEntity(null);
+
+            assertNull(actualEntity);
+        }
     }
 
     private static Product buildProductEntity() {

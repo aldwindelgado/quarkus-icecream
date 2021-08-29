@@ -3,6 +3,7 @@ package io.aldwindelgado.ingredient.service.datasource;
 import com.jparams.verifier.tostring.ToStringVerifier;
 import io.aldwindelgado.product.service.datasource.Product;
 import io.aldwindelgado.sourcingvalue.service.datasource.SourcingValue;
+import io.quarkus.test.junit.QuarkusTest;
 import java.util.List;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import nl.jqno.equalsverifier.Warning;
