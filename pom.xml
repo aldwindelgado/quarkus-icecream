@@ -211,33 +211,33 @@
                     </execution>
                     <!-- Only pass the build if the coverage for tests are met -->
                     <!-- Disabled for now -->
-                    <!--                    <execution>-->
-                    <!--                        <id>jacoco-check</id>-->
-                    <!--                        <goals>-->
-                    <!--                            <goal>check</goal>-->
-                    <!--                        </goals>-->
-                    <!--                        <phase>test</phase>-->
-                    <!--                        <configuration>-->
-                    <!--                            <dataFile>${project.build.directory}/jacoco.exec</dataFile>-->
-                    <!--                            <rules>-->
-                    <!--                                <rule>-->
-                    <!--                                    <element>BUNDLE</element>-->
-                    <!--                                    <limits>-->
-                    <!--                                        <limit>-->
-                    <!--                                            <counter>LINE</counter>-->
-                    <!--                                            <value>COVEREDRATIO</value>-->
-                    <!--                                            <minimum>0.9</minimum>-->
-                    <!--                                        </limit>-->
-                    <!--                                        <limit>-->
-                    <!--                                            <counter>BRANCH</counter>-->
-                    <!--                                            <value>COVEREDRATIO</value>-->
-                    <!--                                            <minimum>0.9</minimum>-->
-                    <!--                                        </limit>-->
-                    <!--                                    </limits>-->
-                    <!--                                </rule>-->
-                    <!--                            </rules>-->
-                    <!--                        </configuration>-->
-                    <!--                    </execution>-->
+                    <execution>
+                        <id>jacoco-check</id>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                        <phase>test</phase>
+                        <configuration>
+                            <dataFile>${project.build.directory}/jacoco.exec</dataFile>
+                            <rules>
+                                <rule>
+                                    <element>BUNDLE</element>
+                                    <limits>
+                                        <limit>
+                                            <counter>LINE</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.90</minimum>
+                                        </limit>
+                                        <limit>
+                                            <counter>BRANCH</counter>
+                                            <value>COVEREDRATIO</value>
+                                            <minimum>0.90</minimum>
+                                        </limit>
+                                    </limits>
+                                </rule>
+                            </rules>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
         </plugins>

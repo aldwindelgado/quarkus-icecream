@@ -22,6 +22,8 @@ import org.mapstruct.Named;
 @Mapper(componentModel = "cdi")
 public abstract class ProductMapper {
 
+    // can replace with SourcingValueRepository and IngredientRepository...
+    // though I like the challenge on testing this... :)
     @Inject
     EntityManager entityManager;
 
@@ -87,6 +89,7 @@ public abstract class ProductMapper {
     @SuppressWarnings("unchecked")
     private List<Ingredient> retrieveIngredients(List<String> ingredientNames) {
         final var loweredCaseNames = ingredientNames.stream().map(String::toLowerCase).collect(Collectors.toList());
+
         return entityManager.createNativeQuery(
                 "SELECT * FROM ingredient ing WHERE lower(ing.name) IN :names", Ingredient.class)
             .setParameter("names", loweredCaseNames)

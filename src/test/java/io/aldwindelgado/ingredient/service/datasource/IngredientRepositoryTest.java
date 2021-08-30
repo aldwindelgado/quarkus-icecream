@@ -14,18 +14,20 @@ import org.junit.jupiter.api.Test;
 @QuarkusTest
 class IngredientRepositoryTest {
 
+    private static final int INGREDIENT_COUNT_FROM_DB = 128;
+
     @Inject
     IngredientRepository repository;
 
     @Test
-    void testGetAllMethod() {
+    void testGetAllQuery() {
         final var allIngredients = repository.getAll();
 
-        assertEquals(128, allIngredients.size());
+        assertEquals(INGREDIENT_COUNT_FROM_DB, allIngredients.size());
     }
 
     @Test
-    void testGetByNameMethod() {
+    void testGetByNameQuery() {
         final var existingIngredient = repository.getByName("cream");
 
         assertTrue(existingIngredient.isPresent());
@@ -33,7 +35,7 @@ class IngredientRepositoryTest {
 
     @TestTransaction
     @Test
-    void testSaveMethod() {
+    void testSaveQuery() {
         var newIngredient = new Ingredient();
         newIngredient.setName("new ingredient");
 

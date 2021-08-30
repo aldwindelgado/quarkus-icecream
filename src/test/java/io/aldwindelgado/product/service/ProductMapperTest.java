@@ -8,6 +8,7 @@ import io.aldwindelgado.product.api.exchange.ProductRequestDto;
 import io.aldwindelgado.product.api.exchange.ProductResponseDto;
 import io.aldwindelgado.product.service.datasource.Product;
 import io.aldwindelgado.sourcingvalue.service.datasource.SourcingValue;
+import io.quarkus.test.junit.QuarkusTest;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.Disabled;
@@ -19,6 +20,7 @@ import org.mapstruct.factory.Mappers;
 /**
  * @author Aldwin Delgado
  */
+@QuarkusTest
 class ProductMapperTest {
 
     private final ProductMapper mapper = Mappers.getMapper(ProductMapper.class);
@@ -165,13 +167,14 @@ class ProductMapperTest {
 
     }
 
-    @Disabled("Having issues with entity manager here...")
     @DisplayName("Test toEntity mapping")
     @Nested
     class ToEntity {
 
+        @Disabled("Searching how to mock the EntityManager to tests")
         @Test
         void testToEntity_thenReturnEntity() {
+//            QuarkusMock.installMockForInstance();
 //            final var mockedIngredientFromDb = new Ingredient();
 //            mockedIngredientFromDb.setName("existing ingredient");
 //            mockedIngredientFromDb.setProducts(Collections.emptyList());

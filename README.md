@@ -1,3 +1,6 @@
+# TODO
+- Update this README
+
 # Quarkus Ice Cream
 A demo application using the Ice Cream repository and [Quarkus](https://quarkus.io/).
 
