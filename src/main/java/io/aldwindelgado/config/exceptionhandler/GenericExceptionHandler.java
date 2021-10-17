@@ -26,6 +26,8 @@ public class GenericExceptionHandler implements ExceptionMapper<Throwable> {
 
     static class ApiErrorDto implements Serializable {
 
+        private static final long serialVersionUID = -816592890593456103L;
+
         private final String timestamp;
 
         private final String message;

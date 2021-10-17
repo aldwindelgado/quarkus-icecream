@@ -1,5 +1,6 @@
 package io.aldwindelgado.sourcingvalue.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import io.aldwindelgado.product.service.datasource.Product;
@@ -18,7 +19,6 @@ import javax.persistence.PersistenceException;
 import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotFoundException;
 import org.hibernate.exception.ConstraintViolationException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -104,17 +104,17 @@ class SourcingValueServiceTest {
             final var expected = List.of(
                 new SourcingValueResponseDto("existing sourcing value", List.of("existing product"))
             );
-            Assertions.assertEquals(expected, actual);
+            assertEquals(expected, actual);
         }
 
         @Test
         void getAll_whenNoRecordFound_thenThrowNotFoundException() {
             QuarkusMock.installMockForInstance(new MockErrorSourcingValueRepository(), repository);
-            assertThrows(
+            final var exception = assertThrows(
                 NotFoundException.class,
-                () -> service.getAll(),
-                "No sourcing value exists"
+                () -> service.getAll()
             );
+            assertEquals(exception.getMessage(), "No sourcing value exists");
         }
     }
 
@@ -128,26 +128,26 @@ class SourcingValueServiceTest {
             final var actual = service.getByName("existing sourcing value");
 
             final var expected = new SourcingValueResponseDto("existing sourcing value", List.of("existing product"));
-            Assertions.assertEquals(expected, actual);
+            assertEquals(expected, actual);
         }
 
         @Test
         void getByName_whenNameIsNull_thenThrowBadRequestException() {
-            assertThrows(
+            final var exception = assertThrows(
                 BadRequestException.class,
-                () -> service.getByName(null),
-                "Sourcing value's name is required"
+                () -> service.getByName(null)
             );
+            assertEquals(exception.getMessage(), "Sourcing value's name is required");
         }
 
         @Test
         void getByName_whenNameIsNotFound_thenThrowNotFoundException() {
             QuarkusMock.installMockForInstance(new MockErrorSourcingValueRepository(), repository);
-            assertThrows(
+            final var exception = assertThrows(
                 NotFoundException.class,
-                () -> service.getByName("existing sourcing value"),
-                "Sourcing value with name 'existing sourcing value' does not exist"
+                () -> service.getByName("existing sourcing value")
             );
+            assertEquals(exception.getMessage(), "Sourcing value with name 'existing sourcing value' does not exist");
         }
     }
 
@@ -193,22 +193,22 @@ class SourcingValueServiceTest {
 
         @Test
         void save_whenRequestIsNull_thenThrowBadRequestException() {
-            assertThrows(
+            final var exception = assertThrows(
                 BadRequestException.class,
-                () -> service.create(null),
-                "Request body is required"
+                () -> service.create(null)
             );
+            assertEquals(exception.getMessage(), "Request body is required");
         }
 
         @Test
         void save_whenSourcingValueNameIsNull_thenThrowBadRequestException() {
             final var request = new SourcingValueRequestDto();
 
-            assertThrows(
+            final var exception = assertThrows(
                 BadRequestException.class,
-                () -> service.create(request),
-                "Sourcing value name is required"
+                () -> service.create(request)
             );
+            assertEquals(exception.getMessage(), "Sourcing value name is required");
         }
 
         @Test
@@ -218,11 +218,11 @@ class SourcingValueServiceTest {
             var request = new SourcingValueRequestDto();
             request.setName("new sourcing value");
 
-            assertThrows(
+            final var exception = assertThrows(
                 BadRequestException.class,
-                () -> service.create(request),
-                "Duplicate sourcing value name"
+                () -> service.create(request)
             );
+            assertEquals(exception.getMessage(), "Duplicate sourcing value name");
         }
 
         @Test
@@ -231,11 +231,11 @@ class SourcingValueServiceTest {
             final var request = new SourcingValueRequestDto();
             request.setName("new sourcing value");
 
-            assertThrows(
+            final var exception = assertThrows(
                 BadRequestException.class,
-                () -> service.create(request),
-                "Invalid request"
+                () -> service.create(request)
             );
+            assertEquals(exception.getMessage(), "Invalid request");
         }
 
         @Test
@@ -244,11 +244,11 @@ class SourcingValueServiceTest {
             final var request = new SourcingValueRequestDto();
             request.setName("new sourcing value");
 
-            assertThrows(
+            final var exception = assertThrows(
                 BadRequestException.class,
-                () -> service.create(request),
-                "Invalid request"
+                () -> service.create(request)
             );
+            assertEquals(exception.getMessage(), "Invalid request");
         }
     }
 }

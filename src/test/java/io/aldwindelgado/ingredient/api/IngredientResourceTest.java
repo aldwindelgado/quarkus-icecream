@@ -1,6 +1,6 @@
 package io.aldwindelgado.ingredient.api;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 
@@ -19,6 +19,7 @@ import javax.ws.rs.BadRequestException;
 import javax.ws.rs.NotAcceptableException;
 import javax.ws.rs.NotFoundException;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
@@ -28,7 +29,6 @@ import org.mockito.Mockito;
  * @author Aldwin Delgado
  */
 @QuarkusTest
-@TestHTTPEndpoint(IngredientResource.class)
 class IngredientResourceTest {
 
     private static final String PROBLEM_JSON_CONTENT_TYPE = "application/problem+json";
@@ -37,168 +37,183 @@ class IngredientResourceTest {
     @InjectMock
     IngredientService service;
 
-    @Test
-    void getByName_whenFound_thenReturn200() {
-        final var response = new IngredientResponseDto("cream", List.of("Banana Split"));
-        Mockito.when(service.getByName(anyString())).thenReturn(response);
+    @Nested
+    @TestHTTPEndpoint(IngredientResource.class)
+    class GetIngredientByName {
 
-        RestAssured.given()
-            .pathParam("name", "cream")
-            .when().get(GET_BY_NAME_PATH)
-            .then()
-            .statusCode(200)
-            .contentType(ContentType.JSON)
-            .body("name", Matchers.equalTo("cream"))
-            .body("products[0]", Matchers.equalTo("Banana Split"));
+        @Test
+        void getByName_whenFound_thenReturn200() {
+            final var response = new IngredientResponseDto("cream", List.of("Banana Split"));
+            Mockito.when(service.getByName(anyString())).thenReturn(response);
+
+            RestAssured.given()
+                .pathParam("name", "cream")
+                .when().get(GET_BY_NAME_PATH)
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("name", Matchers.equalTo("cream"))
+                .body("products[0]", Matchers.equalTo("Banana Split"));
+        }
+
+        @Test
+        void getByName_whenServiceThrowsBadRequestException_thenReturn400() {
+            BadRequestException exception = new BadRequestException("Mocked exception message");
+            Mockito.when(service.getByName(anyString())).thenThrow(exception);
+
+            RestAssured.given()
+                .pathParam("name", "cream")
+                .when().get(GET_BY_NAME_PATH)
+                .then()
+                .statusCode(400)
+                .contentType(PROBLEM_JSON_CONTENT_TYPE)
+                .body("$", Matchers.hasKey("timestamp"))
+                .body("message", Matchers.equalTo("Mocked exception message"));
+        }
+
+        @Test
+        void getByName_whenServiceThrowsNotFoundException_thenReturn404() {
+            NotFoundException exception = new NotFoundException("Mocked exception message");
+            Mockito.when(service.getByName(anyString())).thenThrow(exception);
+
+            RestAssured.given()
+                .pathParam("name", "cream")
+                .when().get(GET_BY_NAME_PATH)
+                .then()
+                .statusCode(404)
+                .contentType(PROBLEM_JSON_CONTENT_TYPE)
+                .body("$", Matchers.hasKey("timestamp"))
+                .body("message", Matchers.equalTo("Mocked exception message"));
+        }
+
+        @Test
+        void getByName_whenServiceThrowsNotHandledException_thenReturn500() {
+            NotAcceptableException exception = new NotAcceptableException("Mocked exception message");
+            Mockito.when(service.getByName(anyString())).thenThrow(exception);
+
+            RestAssured.given()
+                .pathParam("name", "cream")
+                .when().get(GET_BY_NAME_PATH)
+                .then()
+                .statusCode(500)
+                .contentType(PROBLEM_JSON_CONTENT_TYPE)
+                .body("$", Matchers.hasKey("timestamp"))
+                .body("message", Matchers.equalTo("Mocked exception message"));
+        }
     }
 
-    @Test
-    void getByName_whenServiceThrowsBadRequestException_thenReturn400() {
-        BadRequestException exception = new BadRequestException("Mocked exception message");
-        Mockito.when(service.getByName(anyString())).thenThrow(exception);
+    @Nested
+    @TestHTTPEndpoint(IngredientResource.class)
+    class GetAllIngredients {
 
-        RestAssured.given()
-            .pathParam("name", "cream")
-            .when().get(GET_BY_NAME_PATH)
-            .then()
-            .statusCode(400)
-            .contentType(PROBLEM_JSON_CONTENT_TYPE)
-            .body("$", Matchers.hasKey("timestamp"))
-            .body("message", Matchers.equalTo("Mocked exception message"));
+        @Test
+        void getAll_whenFound_thenReturn200() {
+            final var response = List.of(new IngredientResponseDto("cream", List.of("Banana Split")));
+            Mockito.when(service.getAll()).thenReturn(response);
+
+            RestAssured.given()
+                .when().get()
+                .then()
+                .statusCode(200)
+                .contentType(ContentType.JSON)
+                .body("[0].name", Matchers.equalTo("cream"))
+                .body("[0].products[0]", Matchers.equalTo("Banana Split"));
+
+        }
+
+        @Test
+        void getAll_whenServiceThrowsNotFoundException_thenReturn404() {
+            NotFoundException exception = new NotFoundException("Mocked exception message");
+            Mockito.when(service.getAll()).thenThrow(exception);
+
+            RestAssured.given()
+                .when().get()
+                .then()
+                .statusCode(404)
+                .contentType(PROBLEM_JSON_CONTENT_TYPE)
+                .body("$", Matchers.hasKey("timestamp"))
+                .body("message", Matchers.equalTo("Mocked exception message"));
+        }
+
+        @Test
+        void getAll_whenServiceThrowsNotHandledException_thenReturn500() {
+            NotAcceptableException exception = new NotAcceptableException("Mocked exception message");
+            Mockito.when(service.getAll()).thenThrow(exception);
+
+            RestAssured.given()
+                .when().get()
+                .then()
+                .statusCode(500)
+                .contentType(PROBLEM_JSON_CONTENT_TYPE)
+                .body("$", Matchers.hasKey("timestamp"))
+                .body("message", Matchers.equalTo("Mocked exception message"));
+        }
     }
 
-    @Test
-    void getByName_whenServiceThrowsNotFoundException_thenReturn404() {
-        NotFoundException exception = new NotFoundException("Mocked exception message");
-        Mockito.when(service.getByName(anyString())).thenThrow(exception);
 
-        RestAssured.given()
-            .pathParam("name", "cream")
-            .when().get(GET_BY_NAME_PATH)
-            .then()
-            .statusCode(404)
-            .contentType(PROBLEM_JSON_CONTENT_TYPE)
-            .body("$", Matchers.hasKey("timestamp"))
-            .body("message", Matchers.equalTo("Mocked exception message"));
-    }
+    @Nested
+    @TestHTTPEndpoint(IngredientResource.class)
+    class CreateIngredients {
 
-    @Test
-    void getByName_whenServiceThrowsNotHandledException_thenReturn500() {
-        NotAcceptableException exception = new NotAcceptableException("Mocked exception message");
-        Mockito.when(service.getByName(anyString())).thenThrow(exception);
+        @Test
+        void create_whenSuccess_thenReturn201() throws JsonProcessingException {
+            final var mapper = new ObjectMapper();
+            final var rawJson = mapper.createObjectNode();
+            rawJson.put("name", "cream");
+            final var request = mapper.writeValueAsString(rawJson);
 
-        RestAssured.given()
-            .pathParam("name", "cream")
-            .when().get(GET_BY_NAME_PATH)
-            .then()
-            .statusCode(500)
-            .contentType(PROBLEM_JSON_CONTENT_TYPE)
-            .body("$", Matchers.hasKey("timestamp"))
-            .body("message", Matchers.equalTo("Mocked exception message"));
-    }
+            final var response = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post()
+                .then()
+                .statusCode(201)
+                .header("Location", Matchers.endsWith("/ingredients/cream"))
+                .extract().asString();
 
-    @Test
-    void getAll_whenFound_thenReturn200() {
-        final var response = List.of(new IngredientResponseDto("cream", List.of("Banana Split")));
-        Mockito.when(service.getAll()).thenReturn(response);
+            assertTrue(response.isEmpty(), "Response should be empty");
+        }
 
-        RestAssured.given()
-            .when().get()
-            .then()
-            .statusCode(200)
-            .contentType(ContentType.JSON)
-            .body("[0].name", Matchers.equalTo("cream"))
-            .body("[0].products[0]", Matchers.equalTo("Banana Split"));
+        @Test
+        void create_whenServiceThrowsBadRequestException_thenReturn400() throws JsonProcessingException {
+            BadRequestException exception = new BadRequestException("Mocked exception message");
+            Mockito.doThrow(exception).when(service).create(any(IngredientRequestDto.class));
 
-    }
+            final var mapper = new ObjectMapper();
+            final var rawJson = mapper.createObjectNode();
+            rawJson.put("name", "cream");
+            final var request = mapper.writeValueAsString(rawJson);
 
-    @Test
-    void getAll_whenServiceThrowsNotFoundException_thenReturn404() {
-        NotFoundException exception = new NotFoundException("Mocked exception message");
-        Mockito.when(service.getAll()).thenThrow(exception);
+            RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post()
+                .then()
+                .statusCode(400)
+                .contentType(PROBLEM_JSON_CONTENT_TYPE)
+                .body("$", Matchers.hasKey("timestamp"))
+                .body("message", Matchers.equalTo("Mocked exception message"));
+        }
 
-        RestAssured.given()
-            .when().get()
-            .then()
-            .statusCode(404)
-            .contentType(PROBLEM_JSON_CONTENT_TYPE)
-            .body("$", Matchers.hasKey("timestamp"))
-            .body("message", Matchers.equalTo("Mocked exception message"));
-    }
+        @Test
+        void create_whenServiceThrowsNotHandledException_thenReturn500() throws JsonProcessingException {
+            NotAcceptableException exception = new NotAcceptableException("Mocked exception message");
+            Mockito.doThrow(exception).when(service).create(any(IngredientRequestDto.class));
 
-    @Test
-    void getAll_whenServiceThrowsNotHandledException_thenReturn500() {
-        NotAcceptableException exception = new NotAcceptableException("Mocked exception message");
-        Mockito.when(service.getAll()).thenThrow(exception);
+            final var mapper = new ObjectMapper();
+            final var rawJson = mapper.createObjectNode();
+            rawJson.put("name", "cream");
+            final var request = mapper.writeValueAsString(rawJson);
 
-        RestAssured.given()
-            .when().get()
-            .then()
-            .statusCode(500)
-            .contentType(PROBLEM_JSON_CONTENT_TYPE)
-            .body("$", Matchers.hasKey("timestamp"))
-            .body("message", Matchers.equalTo("Mocked exception message"));
-    }
-
-    @Test
-    void create_whenSuccess_thenReturn201() throws JsonProcessingException {
-        final var mapper = new ObjectMapper();
-        final var rawJson = mapper.createObjectNode();
-        rawJson.put("name", "cream");
-        final var request = mapper.writeValueAsString(rawJson);
-
-        final var response = RestAssured.given()
-            .contentType(ContentType.JSON)
-            .body(request)
-            .when().post()
-            .then()
-            .statusCode(201)
-            .header("Location", Matchers.endsWith("/ingredients/cream"))
-            .extract().asString();
-
-        // we expect the response should be empty
-        assertEquals("", response);
-    }
-
-    @Test
-    void create_whenServiceThrowsBadRequestException_thenReturn400() throws JsonProcessingException {
-        BadRequestException exception = new BadRequestException("Mocked exception message");
-        Mockito.doThrow(exception).when(service).create(any(IngredientRequestDto.class));
-
-        final var mapper = new ObjectMapper();
-        final var rawJson = mapper.createObjectNode();
-        rawJson.put("name", "cream");
-        final var request = mapper.writeValueAsString(rawJson);
-
-        RestAssured.given()
-            .contentType(ContentType.JSON)
-            .body(request)
-            .when().post()
-            .then()
-            .statusCode(400)
-            .contentType(PROBLEM_JSON_CONTENT_TYPE)
-            .body("$", Matchers.hasKey("timestamp"))
-            .body("message", Matchers.equalTo("Mocked exception message"));
-    }
-
-    @Test
-    void create_whenServiceThrowsNotHandledException_thenReturn500() throws JsonProcessingException {
-        NotAcceptableException exception = new NotAcceptableException("Mocked exception message");
-        Mockito.doThrow(exception).when(service).create(any(IngredientRequestDto.class));
-
-        final var mapper = new ObjectMapper();
-        final var rawJson = mapper.createObjectNode();
-        rawJson.put("name", "cream");
-        final var request = mapper.writeValueAsString(rawJson);
-
-        RestAssured.given()
-            .contentType(ContentType.JSON)
-            .body(request)
-            .when().post()
-            .then()
-            .statusCode(500)
-            .contentType(PROBLEM_JSON_CONTENT_TYPE)
-            .body("$", Matchers.hasKey("timestamp"))
-            .body("message", Matchers.equalTo("Mocked exception message"));
+            RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(request)
+                .when().post()
+                .then()
+                .statusCode(500)
+                .contentType(PROBLEM_JSON_CONTENT_TYPE)
+                .body("$", Matchers.hasKey("timestamp"))
+                .body("message", Matchers.equalTo("Mocked exception message"));
+        }
     }
 }
