@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 @QuarkusTest
 class ProductRepositoryTest {
 
-    private static final int PRODUCT_COUNT_FROM_DB = 56;
+    private static final int PRODUCT_COUNT_FROM_DB = 51;
 
     @Inject
     ProductRepository repository;
