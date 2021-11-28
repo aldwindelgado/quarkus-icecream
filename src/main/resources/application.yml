@@ -6,7 +6,8 @@ quarkus:
         username: postgres
         password: admin
         jdbc:
-            url: jdbc:postgresql://localhost:5432/quarkus_icecream
+            url: jdbc:tracing:postgresql://localhost:5432/quarkus_icecream
+            driver: "io.opentracing.contrib.jdbc.TracingDriver"
 
     flyway:
         # initiate migration on application bootup
@@ -15,12 +16,23 @@ quarkus:
         baseline-on-migrate: true
         # validate migration
         validate-on-migrate: true
+
     hibernate-orm:
         # enable SQL logs
         log:
             sql: true
+        dialect: "org.hibernate.dialect.PostgreSQLDialect"
+
+    jaeger:
+        service-name: "Ice Cream Service"
+        sampler-type: "const"
+        sampler-param: 1
+
     # enable debug on project
     log:
         # default to debug
         level: INFO
+        console:
+            format: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, [%c{2.}] (%t)
+            %s%e%n"
 

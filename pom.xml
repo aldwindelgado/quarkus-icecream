@@ -35,11 +35,16 @@
         </dependencies>
     </dependencyManagement>
     <dependencies>
+        <!-- Log tracing -->
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-smallrye-opentracing</artifactId>
         </dependency>
-
+        <!-- JDBC Log tracing -->
+        <dependency>
+            <groupId>io.opentracing.contrib</groupId>
+            <artifactId>opentracing-jdbc</artifactId>
+        </dependency>
         <!-- Configuration -->
         <dependency>
             <groupId>io.quarkus</groupId>
