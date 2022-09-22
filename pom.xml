@@ -16,7 +16,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-        <quarkus.platform.version>2.3.0.Final</quarkus.platform.version>
+        <quarkus.platform.version>2.5.0.Final</quarkus.platform.version>
         <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
         <mapstruct.version>1.4.2.Final</mapstruct.version>
         <to-string-verifier.version>1.4.8</to-string-verifier.version>
@@ -35,11 +35,16 @@
         </dependencies>
     </dependencyManagement>
     <dependencies>
+        <!-- Log tracing -->
         <dependency>
             <groupId>io.quarkus</groupId>
             <artifactId>quarkus-smallrye-opentracing</artifactId>
         </dependency>
-
+        <!-- JDBC Log tracing -->
+        <dependency>
+            <groupId>io.opentracing.contrib</groupId>
+            <artifactId>opentracing-jdbc</artifactId>
+        </dependency>
         <!-- Configuration -->
         <dependency>
             <groupId>io.quarkus</groupId>
