@@ -1,6 +1,7 @@
 package io.aldwindelgado.product.service.datasource;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import io.aldwindelgado.ingredient.service.datasource.IngredientRepository;
 import io.aldwindelgado.sourcingvalue.service.datasource.SourcingValueRepository;
@@ -16,7 +17,7 @@ import org.junit.jupiter.api.Test;
 @QuarkusTest
 class ProductRepositoryTest {
 
-    private static final int PRODUCT_COUNT_FROM_DB = 56;
+    private static final int PRODUCT_COUNT_FROM_DB = 51;
 
     @Inject
     ProductRepository repository;

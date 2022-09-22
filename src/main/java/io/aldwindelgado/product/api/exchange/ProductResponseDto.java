@@ -2,6 +2,7 @@ package io.aldwindelgado.product.api.exchange;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.apache.commons.text.StringEscapeUtils;
 
@@ -40,8 +41,8 @@ public final class ProductResponseDto implements Serializable {
         this.story = story;
         this.allergyInfo = allergyInfo;
         this.dietaryCertifications = dietaryCertifications;
-        this.ingredients = ingredients;
-        this.sourcingValues = sourcingValues;
+        this.ingredients = Collections.unmodifiableList(ingredients);
+        this.sourcingValues = Collections.unmodifiableList(sourcingValues);
     }
 
     public String getName() {
