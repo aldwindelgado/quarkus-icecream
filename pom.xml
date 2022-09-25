@@ -16,12 +16,16 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <quarkus.platform.artifact-id>quarkus-bom</quarkus.platform.artifact-id>
         <quarkus.platform.group-id>io.quarkus.platform</quarkus.platform.group-id>
-        <quarkus.platform.version>2.5.0.Final</quarkus.platform.version>
-        <surefire-plugin.version>3.0.0-M5</surefire-plugin.version>
-        <mapstruct.version>1.4.2.Final</mapstruct.version>
+        <quarkus.platform.version>2.12.3.Final</quarkus.platform.version>
+        <skipITs>true</skipITs>
+        <surefire-plugin.version>3.0.0-M7</surefire-plugin.version>
+        <mapstruct.version>1.5.2.Final</mapstruct.version>
         <to-string-verifier.version>1.4.8</to-string-verifier.version>
-        <equals-verifiver.version>3.7.1</equals-verifiver.version>
-        <jacoco.version>0.8.7</jacoco.version>
+        <equals-verifiver.version>3.10.1</equals-verifiver.version>
+        <jacoco.version>0.8.8</jacoco.version>
+        <apache-commons-text.version>1.9</apache-commons-text.version>
+        <!-- Testcontainers is not yet used -->
+        <testcontainers.version>1.17.3</testcontainers.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -123,25 +127,25 @@
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-text</artifactId>
-            <version>1.9</version>
+            <version>${apache-commons-text.version}</version>
         </dependency>
         <!-- Testcontainers -->
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>postgresql</artifactId>
-            <version>1.16.0</version>
+            <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>testcontainers</artifactId>
-            <version>1.16.0</version>
+            <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>1.16.0</version>
+            <version>${testcontainers.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
