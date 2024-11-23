@@ -8,15 +8,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.aldwindelgado.sourcingvalue.api.exchange.SourcingValueRequestDto;
 import io.aldwindelgado.sourcingvalue.api.exchange.SourcingValueResponseDto;
 import io.aldwindelgado.sourcingvalue.service.SourcingValueService;
+import io.quarkus.test.InjectMock;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.InjectMock;
 import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.NotAcceptableException;
+import jakarta.ws.rs.NotFoundException;
 import java.util.List;
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.NotAcceptableException;
-import javax.ws.rs.NotFoundException;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ import org.mockito.Mockito;
 class SourcingValueResourceTest {
 
     private static final String PROBLEM_JSON_CONTENT_TYPE = "application/problem+json";
-    private final static String GET_BY_NAME_PATH = "{name}";
+    private static final String GET_BY_NAME_PATH = "{name}";
 
     @InjectMock
     SourcingValueService service;

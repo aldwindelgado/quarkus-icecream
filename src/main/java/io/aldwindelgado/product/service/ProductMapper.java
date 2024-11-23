@@ -5,10 +5,10 @@ import io.aldwindelgado.product.api.exchange.ProductRequestDto;
 import io.aldwindelgado.product.api.exchange.ProductResponseDto;
 import io.aldwindelgado.product.service.datasource.Product;
 import io.aldwindelgado.sourcingvalue.service.datasource.SourcingValue;
+import jakarta.inject.Inject;
+import jakarta.persistence.EntityManager;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.inject.Inject;
-import javax.persistence.EntityManager;
 import org.apache.commons.text.StringEscapeUtils;
 import org.mapstruct.AfterMapping;
 import org.mapstruct.Mapper;
@@ -88,7 +88,7 @@ public abstract class ProductMapper {
      */
     @SuppressWarnings("unchecked")
     private List<Ingredient> retrieveIngredients(List<String> ingredientNames) {
-        final var loweredCaseNames = ingredientNames.stream().map(String::toLowerCase).collect(Collectors.toList());
+        final var loweredCaseNames = ingredientNames.stream().map(String::toLowerCase).toList();
 
         return entityManager.createNativeQuery(
                 "SELECT * FROM ingredient ing WHERE lower(ing.name) IN :names", Ingredient.class)

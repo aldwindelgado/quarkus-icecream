@@ -1,11 +1,11 @@
 package io.aldwindelgado.config.exceptionhandler;
 
 import io.aldwindelgado.config.exceptionhandler.GenericExceptionHandler.ApiErrorDto;
-import javax.ws.rs.NotFoundException;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.Provider;
+import jakarta.ws.rs.NotFoundException;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.Response.Status;
+import jakarta.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.ext.Provider;
 
 /**
  * @author Aldwin Delgado

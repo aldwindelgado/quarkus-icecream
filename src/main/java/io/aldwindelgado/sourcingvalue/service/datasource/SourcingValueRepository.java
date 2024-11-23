@@ -2,10 +2,10 @@ package io.aldwindelgado.sourcingvalue.service.datasource;
 
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import io.quarkus.panache.common.Sort;
+import jakarta.enterprise.context.ApplicationScoped;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import javax.enterprise.context.ApplicationScoped;
 
 /**
  * @author Aldwin Delgado

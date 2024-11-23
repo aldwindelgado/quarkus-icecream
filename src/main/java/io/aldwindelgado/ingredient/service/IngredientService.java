@@ -3,18 +3,20 @@ package io.aldwindelgado.ingredient.service;
 import io.aldwindelgado.ingredient.api.exchange.IngredientRequestDto;
 import io.aldwindelgado.ingredient.api.exchange.IngredientResponseDto;
 import io.aldwindelgado.ingredient.service.datasource.IngredientRepository;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.persistence.PersistenceException;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.NotFoundException;
 import java.util.List;
-import javax.enterprise.context.ApplicationScoped;
-import javax.persistence.PersistenceException;
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.NotFoundException;
 import org.hibernate.exception.ConstraintViolationException;
+import org.jboss.logging.Logger;
 
 /**
  * @author Aldwin Delgado
  */
 @ApplicationScoped
 public class IngredientService {
+    private static final Logger log = Logger.getLogger(IngredientService.class);
 
     // this is the constraint name declared on the database
     private static final String UNIQUE_INGREDIENT_NAME = "unq_ingredient_name";
@@ -63,11 +65,10 @@ public class IngredientService {
         try {
             repository.save(ingredient);
         } catch (PersistenceException pEx) {
-            if (pEx.getCause() instanceof ConstraintViolationException) {
-                ConstraintViolationException cvEx = (ConstraintViolationException) pEx.getCause();
-                if (cvEx.getConstraintName().equals(UNIQUE_INGREDIENT_NAME)) {
-                    throw new BadRequestException("Duplicate ingredient name");
-                }
+            log.error("Ingredient creation error: ", pEx);
+            if (pEx.getCause() instanceof ConstraintViolationException cvEx &&
+                UNIQUE_INGREDIENT_NAME.equals(cvEx.getConstraintName())) {
+                throw new BadRequestException("Duplicate ingredient name");
             }
 
             // default

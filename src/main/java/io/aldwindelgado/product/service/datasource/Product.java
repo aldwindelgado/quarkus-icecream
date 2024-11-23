@@ -2,21 +2,21 @@ package io.aldwindelgado.product.service.datasource;
 
 import io.aldwindelgado.ingredient.service.datasource.Ingredient;
 import io.aldwindelgado.sourcingvalue.service.datasource.SourcingValue;
+import jakarta.persistence.Cacheable;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.Cacheable;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
 
 @Table(name = "product")
 @Entity
@@ -24,8 +24,9 @@ import javax.persistence.Table;
 public class Product {
 
     @Id
-    @SequenceGenerator(name = "idSeq", sequenceName = "product_seq", initialValue = 2195, allocationSize = 1)
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "idSeq")
+    @SequenceGenerator(name = "productIdSequencer", sequenceName = "product_seq",
+        initialValue = 2195, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "productIdSequencer")
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -183,14 +184,18 @@ public class Product {
             return false;
         }
 
-        Product product = (Product) o;
+        Product that = (Product) o;
 
-        return Objects.equals(id, product.id);
+        return Objects.equals(getId(), that.getId());
     }
 
     @Override
     public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+        if (getId() == null) {
+            return 0;
+        }
+
+        return getId().hashCode();
     }
 
     @Override

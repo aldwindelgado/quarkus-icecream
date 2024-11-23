@@ -3,18 +3,20 @@ package io.aldwindelgado.sourcingvalue.service;
 import io.aldwindelgado.sourcingvalue.api.exchange.SourcingValueRequestDto;
 import io.aldwindelgado.sourcingvalue.api.exchange.SourcingValueResponseDto;
 import io.aldwindelgado.sourcingvalue.service.datasource.SourcingValueRepository;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.persistence.PersistenceException;
+import jakarta.ws.rs.BadRequestException;
+import jakarta.ws.rs.NotFoundException;
 import java.util.List;
-import javax.enterprise.context.ApplicationScoped;
-import javax.persistence.PersistenceException;
-import javax.ws.rs.BadRequestException;
-import javax.ws.rs.NotFoundException;
 import org.hibernate.exception.ConstraintViolationException;
+import org.jboss.logging.Logger;
 
 /**
  * @author Aldwin Delgado
  */
 @ApplicationScoped
 public class SourcingValueService {
+    private static final Logger log = Logger.getLogger(SourcingValueService.class);
 
     // this is the constraint name declared on the database
     private static final String UNIQUE_SOURCING_VALUE_NAME = "unq_sourcingvalue_name";
@@ -63,11 +65,10 @@ public class SourcingValueService {
         try {
             repository.save(sourcingValue);
         } catch (PersistenceException pEx) {
-            if (pEx.getCause() instanceof ConstraintViolationException) {
-                ConstraintViolationException cvEx = (ConstraintViolationException) pEx.getCause();
-                if (cvEx.getConstraintName().equals(UNIQUE_SOURCING_VALUE_NAME)) {
-                    throw new BadRequestException("Duplicate sourcing value name");
-                }
+            log.error("Product creation error: ", pEx);
+            if (pEx.getCause() instanceof ConstraintViolationException cvEx &&
+                UNIQUE_SOURCING_VALUE_NAME.equals(cvEx.getConstraintName())) {
+                throw new BadRequestException("Duplicate sourcing value name");
             }
 
             // default

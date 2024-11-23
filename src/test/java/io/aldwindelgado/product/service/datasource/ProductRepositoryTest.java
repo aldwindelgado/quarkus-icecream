@@ -7,8 +7,8 @@ import io.aldwindelgado.ingredient.service.datasource.IngredientRepository;
 import io.aldwindelgado.sourcingvalue.service.datasource.SourcingValueRepository;
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.junit.QuarkusTest;
+import jakarta.inject.Inject;
 import java.util.List;
-import javax.inject.Inject;
 import org.junit.jupiter.api.Test;
 
 /**

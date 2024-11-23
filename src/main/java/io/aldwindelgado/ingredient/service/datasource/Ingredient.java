@@ -1,16 +1,18 @@
 package io.aldwindelgado.ingredient.service.datasource;
 
 import io.aldwindelgado.product.service.datasource.Product;
+import jakarta.persistence.Cacheable;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.Cacheable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
 
 /**
  * @author Aldwin Delgado
@@ -21,7 +23,9 @@ import javax.persistence.Table;
 public class Ingredient {
 
     @Id
-    @GeneratedValue
+    @SequenceGenerator(name = "ingredientIdSequencer", sequenceName = "ingredient_seq",
+        initialValue = 150, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ingredientIdSequencer")
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -69,12 +73,16 @@ public class Ingredient {
 
         Ingredient that = (Ingredient) o;
 
-        return Objects.equals(id, that.id);
+        return Objects.equals(getId(), that.getId());
     }
 
     @Override
     public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+        if (getId() == null) {
+            return 0;
+        }
+
+        return getId().hashCode();
     }
 
     @Override

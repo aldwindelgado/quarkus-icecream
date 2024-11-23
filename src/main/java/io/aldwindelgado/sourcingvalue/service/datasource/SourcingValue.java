@@ -1,16 +1,18 @@
 package io.aldwindelgado.sourcingvalue.service.datasource;
 
 import io.aldwindelgado.product.service.datasource.Product;
+import jakarta.persistence.Cacheable;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.Cacheable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
 
 @Table(name = "sourcing_value")
 @Entity
@@ -18,7 +20,8 @@ import javax.persistence.Table;
 public class SourcingValue {
 
     @Id
-    @GeneratedValue
+    @SequenceGenerator(name = "sourcingValueIdSequencer", sequenceName = "sourcing_value_seq", initialValue = 10, allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sourcingValueIdSequencer")
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -66,12 +69,16 @@ public class SourcingValue {
 
         SourcingValue that = (SourcingValue) o;
 
-        return Objects.equals(id, that.id);
+        return Objects.equals(getId(), that.getId());
     }
 
     @Override
     public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+        if (getId() == null) {
+            return 0;
+        }
+
+        return getId().hashCode();
     }
 
     @Override
