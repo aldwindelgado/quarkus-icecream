@@ -1,0 +1,8 @@
+quarkus:
+    datasource:
+        jdbc:
+            url: jdbc:tracing:postgresql://host.docker.internal:5432/quarkus_icecream
+    otel:
+        exporter:
+            otlp:
+                endpoint: http://host.docker.internal:4317
