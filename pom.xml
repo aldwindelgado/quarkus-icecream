@@ -89,6 +89,28 @@
             <version>${mapstruct.version}</version>
         </dependency>
 
+        <!-- Observability -->
+        <!-- OpenAPI and Swagger | /q/swagger-ui or /q/openapi?format=json -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-smallrye-openapi</artifactId>
+        </dependency>
+        <!-- Observability | /q/health endpoint -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-smallrye-health</artifactId>
+        </dependency>
+        <!-- Metrics -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-micrometer</artifactId>
+        </dependency>
+        <!-- Metrics | /q/metrics -->
+        <dependency>
+            <groupId>io.quarkus</groupId>
+            <artifactId>quarkus-micrometer-registry-prometheus</artifactId>
+        </dependency>
+
         <!-- Testing -->
         <dependency>
             <groupId>io.quarkus</groupId>

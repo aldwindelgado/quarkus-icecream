@@ -2,6 +2,8 @@ quarkus:
     http:
         port: 6700
     datasource:
+        metrics:
+            enabled: true
         db-kind: postgresql
         username: postgres
         password: admin
@@ -31,3 +33,21 @@ quarkus:
             format: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, [%c{2.}] (%t)
             %s%e%n"
 
+# OpenAPI additional info, /q/openapi
+# To open swagger ui, /q/swagger-ui
+mp:
+    openapi:
+        extensions:
+            smallrye:
+                openapi: 3.0.2
+                info:
+                    title: OpenAPI for Quarkus Icecream
+                    version: 1.0.0
+                    description: OpenAPI specs for this demo app
+                    contact:
+                        email: github.dried286@passmail.net
+                        name: Aldwin Delgado
+                        url: https://aldwindelgado.github.io/
+                    license:
+                        name: Apache 2.0
+                        url: http://www.apache.org/licenses/LICENSE-2.0.html
