@@ -20,13 +20,8 @@ quarkus:
     hibernate-orm:
         # enable SQL logs
         log:
-            sql: true
+            sql: false
         dialect: "org.hibernate.dialect.PostgreSQLDialect"
-
-    jaeger:
-        service-name: "Ice Cream Service"
-        sampler-type: "const"
-        sampler-param: 1
 
     # enable debug on project
     log:
