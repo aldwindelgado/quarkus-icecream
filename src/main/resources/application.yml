@@ -10,6 +10,7 @@ quarkus:
         jdbc:
             url: jdbc:tracing:postgresql://localhost:5432/quarkus_icecream
             driver: "io.opentracing.contrib.jdbc.TracingDriver"
+            telemetry: true
 
     flyway:
         # initiate migration on application bootup
